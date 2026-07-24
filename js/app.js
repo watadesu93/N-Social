@@ -44,15 +44,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             document.getElementById('profile-following').textContent = profileUser.following || 0;
             document.getElementById('profile-followers').textContent = profileUser.followers || 0;
             
-            // ママ表記の反映
-            const mamaElement = document.getElementById('profile-mama');
-            if (profileUser.mama && profileUser.mama !== "") {
-                mamaElement.textContent = `🎨 ﾃﾞｻﾞｲﾝ/ﾏﾏ: ${profileUser.mama}`;
-                mamaElement.style.display = "block";
-            } else {
-                mamaElement.style.display = "none";
-            }
-            
             // プロフィール大アイコンの切替
             const largeIconElem = document.getElementById('profile-icon');
             if (profileUser.iconImage && profileUser.iconImage !== "") {
