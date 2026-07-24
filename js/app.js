@@ -38,6 +38,10 @@ document.addEventListener('DOMContentLoaded', async () => {
             document.getElementById('profile-name').textContent = profileUser.name;
             document.getElementById('profile-account').textContent = profileUser.account;
             document.getElementById('profile-bio').textContent = profileUser.bio;
+           
+            // 追加：フォロー・フォロワー数の反映
+            document.getElementById('profile-following').textContent = profileUser.following || 0;
+            document.getElementById('profile-followers').textContent = profileUser.followers || 0;
             
             // プロフィール大アイコンの切替
             const largeIconElem = document.getElementById('profile-icon');
