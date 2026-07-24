@@ -203,3 +203,23 @@ body {
   color: var(--text-muted);
   margin-top: 2px;
 }
+/* --------------------
+   プロフィールページ用
+-------------------- */
+.profile-banner {
+  height: 200px;
+  background-color: var(--border-color);
+  /* 以下の3行を追加：画像を枠いっぱいに綺麗に表示する設定 */
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+/* リンク付きテキスト用 */
+.link-text {
+  color: inherit;
+  text-decoration: none;
+}
+.link-text:hover {
+  text-decoration: underline;
+}
