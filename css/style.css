@@ -1,221 +1,77 @@
+/* --------------------
+   基本設定・変数
+-------------------- */
 :root {
-  --bg-color: #15202b;       /* 背景色 */
-  --hover-bg: #1e2732;       /* ホバー時の背景色（X風） */
-  --accent-color: #8a2be2;   /* アクセントの紫 */
-  --text-main: #ffffff;
-  --text-muted: #8899a6;
-  --border-color: #38444d;   /* 境界線の色 */
-}
-
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
+  --bg-color: #0b0e14;
+  --card-bg: #151b22;
+  --text-main: #f0f6fc;
+  --text-muted: #8b949e;
+  --border-color: #30363d;
+  --hover-bg: rgba(255, 255, 255, 0.05);
+  --accent-color: #1d9bf0;
 }
 
 body {
   background-color: var(--bg-color);
   color: var(--text-main);
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
+  margin: 0;
+  padding: 0;
 }
 
+/* --------------------
+   レイアウト共通
+-------------------- */
 .container {
   display: flex;
-  justify-content: center;
-  max-width: 1250px;
+  max-width: 1200px;
   margin: 0 auto;
   min-height: 100vh;
 }
 
-/* --------------------
-   左カラム：メニュー
--------------------- */
 .sidebar-left {
-  width: 275px;
-  padding: 10px 20px;
-  position: sticky;
-  top: 0;
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
+  width: 250px;
+  padding: 20px;
+  border-right: 1px solid var(--border-color);
 }
 
+.main-content {
+  flex: 1;
+  border-right: 1px solid var(--border-color);
+  max-width: 600px;
+}
+
+.sidebar-right {
+  width: 350px;
+  padding: 20px;
+}
+
+/* --------------------
+   サイドバー・ナビ
+-------------------- */
 .logo {
-  font-size: 24px;
+  font-size: 20px;
   font-weight: bold;
-  color: var(--text-main); /* Xっぽく白に */
-  padding: 15px;
-  margin-bottom: 10px;
+  margin-bottom: 20px;
+  color: var(--text-main);
 }
 
 .nav-item {
-  padding: 15px 20px;
-  font-size: 20px;
+  padding: 12px 15px;
+  font-size: 16px;
+  color: var(--text-main);
+  border-radius: 9999px;
+  margin-bottom: 5px;
   cursor: pointer;
   transition: background-color 0.2s;
-  border-radius: 30px;
-  width: fit-content;
-  margin-bottom: 5px;
+  text-decoration: none;
+  display: block;
 }
 
 .nav-item:hover {
   background-color: var(--hover-bg);
 }
 
-/* --------------------
-   中央カラム：タイムライン
--------------------- */
-.main-content {
-  width: 600px;
-  border-left: 1px solid var(--border-color);
-  border-right: 1px solid var(--border-color);
-  min-height: 100vh;
-}
-
-.page-title {
-  padding: 15px 20px;
-  font-size: 20px;
-  font-weight: bold;
-  border-bottom: 1px solid var(--border-color);
-  backdrop-filter: blur(10px);
-  position: sticky;
-  top: 0;
-  background-color: rgba(21, 32, 43, 0.85);
-  z-index: 10;
-  cursor: pointer;
-}
-
-.post {
-  padding: 15px 20px;
-  border-bottom: 1px solid var(--border-color);
-  display: flex;
-  gap: 15px;
-  transition: background-color 0.2s;
-  cursor: pointer;
-}
-
-.post:hover {
-  background-color: var(--hover-bg);
-}
-
-.post-icon {
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  background-color: var(--accent-color);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: bold;
-  flex-shrink: 0;
-}
-
-.post-content {
-  width: 100%;
-}
-
-.post-header {
-  display: flex;
-  gap: 5px;
-  align-items: baseline;
-  margin-bottom: 2px;
-}
-
-.post-name {
-  font-weight: bold;
-}
-
-.post-account, .post-time {
-  color: var(--text-muted);
-  font-size: 15px;
-}
-
-.post-text {
-  font-size: 15px;
-  margin-bottom: 10px;
-  white-space: pre-wrap; /* 改行を反映 */
-}
-
-.post-actions {
-  display: flex;
-  justify-content: space-between;
-  max-width: 400px;
-  color: var(--text-muted);
-  font-size: 14px;
-}
-
-.post-actions span {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  cursor: pointer;
-  padding: 8px;
-  border-radius: 50%;
-  transition: color 0.2s, background-color 0.2s;
-}
-
-.post-actions span:hover {
-  color: var(--accent-color);
-  background-color: rgba(138, 43, 226, 0.1);
-}
-
-/* --------------------
-   右カラム：トレンド
--------------------- */
-.sidebar-right {
-  width: 350px;
-  padding: 15px 20px;
-  position: sticky;
-  top: 0;
-  height: 100vh;
-}
-
-.trend-card {
-  background-color: var(--hover-bg); /* Xの右カラム風の少し浮いた色 */
-  border-radius: 15px;
-  padding: 15px 0;
-}
-
-.trend-card h2 {
-  font-size: 20px;
-  font-weight: bold;
-  padding: 0 15px 15px 15px;
-}
-
-.trend-item {
-  padding: 10px 15px;
-  cursor: pointer;
-  transition: background-color 0.2s;
-}
-
-.trend-item:hover {
-  background-color: rgba(255, 255, 255, 0.03);
-}
-
-.trend-keyword {
-  font-weight: bold;
-  display: block;
-}
-
-.trend-count {
-  font-size: 13px;
-  color: var(--text-muted);
-  margin-top: 2px;
-}
-/* --------------------
-   プロフィールページ用
--------------------- */
-.profile-banner {
-  height: 200px;
-  background-color: var(--border-color);
-  /* 以下の3行を追加：画像を枠いっぱいに綺麗に表示する設定 */
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-}
-
-/* リンク付きテキスト用 */
 .link-text {
   color: inherit;
   text-decoration: none;
@@ -225,130 +81,162 @@ body {
 }
 
 /* --------------------
-   検索ページ用
+   タイムライン・投稿
 -------------------- */
-.search-box-container {
+.page-title {
   padding: 15px 20px;
-  border-bottom: 1px solid var(--border-color);
-}
-
-.search-input {
-  width: 100%;
-  padding: 12px 20px;
-  background-color: var(--hover-bg);
-  border: 1px solid var(--border-color);
-  border-radius: 30px;
-  color: var(--text-main);
-  font-size: 15px;
-  outline: none;
-  transition: border-color 0.2s;
-}
-
-.search-input:focus {
-  border-color: var(--accent-color);
-}
-
-/* --------------------
-   投稿詳細ページ用
--------------------- */
-.single-post {
-  padding: 20px;
-  border-bottom: 1px solid var(--border-color);
-}
-
-.single-post-header {
-  display: flex;
-  gap: 15px;
-  align-items: center;
-  margin-bottom: 15px;
-}
-
-.single-post-text {
   font-size: 18px;
-  margin-bottom: 20px;
-  white-space: pre-wrap;
-  line-height: 1.6;
-}
-
-.single-post-meta {
-  color: var(--text-muted);
-  font-size: 14px;
-  padding-bottom: 15px;
+  font-weight: bold;
   border-bottom: 1px solid var(--border-color);
-  margin-bottom: 15px;
-}
-
-.single-post-stats {
   display: flex;
-  gap: 30px;
-  padding-bottom: 15px;
-  border-bottom: 1px solid var(--border-color);
-  margin-bottom: 15px;
-  font-size: 15px;
+  align-items: center;
 }
 
-.single-post-stats span strong {
-  color: var(--text-main);
-}
-
-/* リプライ（返信）用のスタイル */
-.reply-post {
+.post {
+  display: flex;
   padding: 15px 20px;
   border-bottom: 1px solid var(--border-color);
-  display: flex;
-  gap: 15px;
-  background-color: rgba(29, 42, 53, 0.4);
+  cursor: pointer;
   transition: background-color 0.2s;
 }
 
-.reply-post:hover {
+.post:hover {
   background-color: var(--hover-bg);
 }
 
-/* --------------------
-   ユーザーアイコン画像用
--------------------- */
+/* ユーザーアイコン画像用 */
 .post-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background-color: var(--border-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  flex-shrink: 0;
+  margin-right: 15px;
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  /* 画像がない場合に備えて文字色やフォントの設定も残す */
   color: var(--text-main);
 }
 
+.post-content {
+  flex: 1;
+}
+
+.post-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 4px;
+}
+
+.post-name {
+  font-weight: bold;
+  margin-right: 6px;
+}
+
+.post-account, .post-time {
+  color: var(--text-muted);
+  font-size: 14px;
+}
+
+.post-text {
+  font-size: 15px;
+  line-height: 1.5;
+  margin-bottom: 10px;
+  white-space: pre-wrap;
+}
+
+.post-actions {
+  display: flex;
+  justify-content: space-between;
+  color: var(--text-muted);
+  font-size: 14px;
+  max-width: 300px;
+  margin-top: 10px;
+}
+
 /* --------------------
-   フォロー・フォロワー表示用
+   プロフィール画面用
 -------------------- */
+.profile-header-box {
+  border-bottom: 1px solid var(--border-color);
+}
+
+.profile-banner {
+  height: 200px;
+  background-color: #38444d;
+  background-size: cover;
+  background-position: center;
+}
+
+.profile-info-container {
+  padding: 15px 20px;
+  position: relative;
+}
+
+.profile-icon-large {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background-color: var(--border-color);
+  border: 4px solid var(--bg-color);
+  margin-top: -50px;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  font-weight: bold;
+  background-size: cover;
+  background-position: center;
+  color: var(--text-main);
+}
+
+#profile-name {
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.profile-bio {
+  margin-top: 12px;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
 .profile-stats {
   display: flex;
   gap: 20px;
-  margin-top: 15px;
+  margin-top: 12px;
   font-size: 14px;
   color: var(--text-muted);
 }
 
 .profile-stats span strong {
   color: var(--text-main);
-  margin-right: 4px;
+}
 
 /* --------------------
-   X風プロフィールタブ
+   X風プロフィールタブ（横並び・大きめ文字）
 -------------------- */
 .profile-tabs {
   display: flex;
   border-bottom: 1px solid var(--border-color);
-  margin-top: 15px;
+  width: 100%;
 }
 
 .profile-tab {
   flex: 1;
   text-align: center;
-  padding: 15px 0;
+  padding: 16px 0;
   font-size: 15px;
+  font-weight: 500;
   color: var(--text-muted);
   cursor: pointer;
   position: relative;
-  transition: background-color 0.2s;
+  transition: background-color 0.2s, color 0.2s;
 }
 
 .profile-tab:hover {
@@ -361,16 +249,50 @@ body {
   font-weight: bold;
 }
 
-/* 選択中のタブの下にある青いバー */
+/* 選択中のタブの青い下線バー */
 .profile-tab.active::after {
   content: '';
   position: absolute;
   bottom: 0;
   left: 50%;
   transform: translateX(-50%);
-  width: 50px;
+  width: 56px;
   height: 4px;
-  background-color: #1d9bf0; /* Xのブランドカラーの青 */
+  background-color: var(--accent-color);
   border-radius: 2px;
 }
+
+/* --------------------
+   トレンド欄
+-------------------- */
+.trend-card {
+  background-color: var(--card-bg);
+  border-radius: 16px;
+  padding: 15px;
+  border: 1px solid var(--border-color);
+}
+
+.trend-card h2 {
+  font-size: 18px;
+  margin-bottom: 15px;
+}
+
+.trend-item {
+  padding: 10px 0;
+  cursor: pointer;
+}
+
+.trend-item:hover {
+  opacity: 0.8;
+}
+
+.trend-keyword {
+  display: block;
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.trend-count {
+  font-size: 12px;
+  color: var(--text-muted);
 }
