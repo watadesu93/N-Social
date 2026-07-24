@@ -1,1 +1,0 @@
-fetch('data/posts.json').then(r=>r.json()).then(posts=>{const t=document.getElementById('timeline');posts.forEach(p=>{t.innerHTML+=`<div class="post"><b>${p.user}</b> <span class="account">${p.account}</span><div>${p.text}</div><div class="likes">❤️ ${p.likes}</div></div>`})});
