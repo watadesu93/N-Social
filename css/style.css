@@ -330,4 +330,47 @@ body {
 .profile-stats span strong {
   color: var(--text-main);
   margin-right: 4px;
+
+/* --------------------
+   X風プロフィールタブ
+-------------------- */
+.profile-tabs {
+  display: flex;
+  border-bottom: 1px solid var(--border-color);
+  margin-top: 15px;
+}
+
+.profile-tab {
+  flex: 1;
+  text-align: center;
+  padding: 15px 0;
+  font-size: 15px;
+  color: var(--text-muted);
+  cursor: pointer;
+  position: relative;
+  transition: background-color 0.2s;
+}
+
+.profile-tab:hover {
+  background-color: var(--hover-bg);
+  color: var(--text-main);
+}
+
+.profile-tab.active {
+  color: var(--text-main);
+  font-weight: bold;
+}
+
+/* 選択中のタブの下にある青いバー */
+.profile-tab.active::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 50px;
+  height: 4px;
+  background-color: #1d9bf0; /* Xのブランドカラーの青 */
+  border-radius: 2px;
+}
 }

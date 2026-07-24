@@ -61,6 +61,43 @@ document.addEventListener('DOMContentLoaded', async () => {
             } else if (profileUser.bannerColor) {
                 bannerElement.style.backgroundColor = profileUser.bannerColor;
             }
+
+            // タブ切り替えのイベント設定
+            const tabs = document.querySelectorAll('.profile-tab');
+            tabs.forEach(tab => {
+                tab.addEventListener('click', (e) => {
+                    tabs.forEach(t => t.classList.remove('active'));
+                    e.target.classList.add('active');
+
+                    const tabType = e.target.getAttribute('data-tab');
+                    renderProfileTabContent(tabType, profileUser);
+                });
+            });
+        }
+    }
+
+    // プロフィール画面のタブごとのコンテンツ描画
+    function renderProfileTabContent(tabType, profileUser) {
+        const timeline = document.getElementById('timeline');
+        if (!timeline) return;
+        timeline.innerHTML = '';
+
+        if (tabType === 'posts') {
+            // 通常の投稿一覧を描画
+            renderTimeline();
+        } else {
+            // 返信・ハイライト・メディア・いいねタブのダミー表示
+            const messages = {
+                replies: 'まだ返信はありません。',
+                highlights: 'ハイライトに登録された投稿はありません。',
+                media: 'メディア付きの投稿はありません。',
+                likes: 'いいねした投稿は非公開です。'
+            };
+
+            const emptyDiv = document.createElement('div');
+            emptyDiv.style.cssText = 'padding: 40px; text-align: center; color: var(--text-muted); font-size: 15px;';
+            emptyDiv.textContent = messages[tabType] || '投稿はありません。';
+            timeline.appendChild(emptyDiv);
         }
     }
 

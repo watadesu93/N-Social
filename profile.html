@@ -41,9 +41,18 @@
                         <span><strong id="profile-followers">0</strong> フォロワー</span>
                     </div>
                 </div>
+
+                <!-- 追加：X風タブメニュー -->
+                <div class="profile-tabs">
+                    <div class="profile-tab active" data-tab="posts">ポスト</div>
+                    <div class="profile-tab" data-tab="replies">返信</div>
+                    <div class="profile-tab" data-tab="highlights">ハイライト</div>
+                    <div class="profile-tab" data-tab="media">メディア</div>
+                    <div class="profile-tab" data-tab="likes">いいね</div>
+                </div>
             </div>
 
-            <!-- js/app.js でここに絞り込まれた投稿が挿入されます -->
+            <!-- タイムラインまたはタブごとのコンテンツ表示場所 -->
             <div id="timeline"></div>
         </main>
 
