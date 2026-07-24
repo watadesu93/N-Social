@@ -304,3 +304,14 @@ body {
 .reply-post:hover {
   background-color: var(--hover-bg);
 }
+
+/* --------------------
+   ユーザーアイコン画像用
+-------------------- */
+.post-icon {
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  /* 画像がない場合に備えて文字色やフォントの設定も残す */
+  color: var(--text-main);
+}
