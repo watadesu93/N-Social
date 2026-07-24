@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>N Social - 投稿詳細</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="container">
+        <!-- 左カラム -->
+        <aside class="sidebar-left">
+            <div class="logo">N Social</div>
+            <nav>
+                <a href="index.html" class="nav-item link-text" style="display:block;">🏠 ホーム</a>
+                <a href="search.html" class="nav-item link-text" style="display:block;">🔍 検索</a>
+                <div class="nav-item">🔥 トレンド</div>
+                <div class="nav-item">🔔 通知</div>
+                <a href="profile.html?id=user1" class="nav-item link-text" style="display:block;">👤 プロフィール</a>
+            </nav>
+        </aside>
+
+        <!-- 中央カラム -->
+        <main class="main-content">
+            <div class="page-title">
+                <a href="index.html" class="link-text" style="margin-right: 15px;">←</a>
+                <span>ポスト</span>
+            </div>
+
+            <!-- 選択されたメインの投稿が表示される場所 -->
+            <div id="single-post-container"></div>
+
+            <!-- 返信（リプライ）一覧の表示場所 -->
+            <div id="replies-container"></div>
+        </main>
+
+        <!-- 右カラム -->
+        <aside class="sidebar-right">
+            <div class="trend-card">
+                <h2>トレンド</h2>
+                <div id="trend-list"></div>
+            </div>
+        </aside>
+    </div>
+
+    <script src="js/app.js"></script>
+</body>
+</html>
