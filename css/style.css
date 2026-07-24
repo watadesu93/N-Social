@@ -347,3 +347,85 @@ body {
 .media-grid-item:hover {
   opacity: 0.9;
 }
+
+/* --------------------
+   X風アクションボタン＆レイアウト調整
+-------------------- */
+.post-actions {
+  display: flex;
+  justify-content: space-between;
+  color: var(--text-muted);
+  font-size: 13px;
+  max-width: 425px;
+  margin-top: 12px;
+}
+
+.post-action-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.post-action-item:hover.reply { color: var(--accent-color); }
+.post-action-item:hover.repost { color: #00ba7c; }
+.post-action-item:hover.like { color: #f91880; }
+.post-action-item:hover.view { color: var(--accent-color); }
+.post-action-item:hover.bookmark { color: var(--accent-color); }
+.post-action-item:hover.share { color: var(--accent-color); }
+
+/* --------------------
+   画像の拡大表示（モーダル）
+-------------------- */
+.post-image-container {
+  margin-top: 10px;
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid var(--border-color);
+  max-height: 350px;
+  cursor: pointer;
+}
+
+.post-image-container img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* モーダル全体の背景 */
+#image-modal {
+  display: none;
+  position: fixed;
+  z-index: 9999;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.85);
+  align-items: center;
+  justify-content: center;
+}
+
+/* モーダル内の画像 */
+#image-modal-content {
+  max-width: 90%;
+  max-height: 90vh;
+  object-fit: contain;
+  border-radius: 8px;
+}
+
+/* 閉じるボタン */
+#image-modal-close {
+  position: absolute;
+  top: 20px;
+  right: 30px;
+  color: #fff;
+  font-size: 40px;
+  font-weight: bold;
+  cursor: pointer;
+}
+#image-modal-close:hover {
+  color: var(--text-muted);
+}

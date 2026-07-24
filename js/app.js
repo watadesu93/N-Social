@@ -8,6 +8,34 @@ document.addEventListener('DOMContentLoaded', async () => {
     const searchQuery = urlParams.get('q') || '';
     const targetPostId = parseInt(urlParams.get('id')) || 1;
 
+    // 画像拡大用モーダルのHTMLを自動生成して追加
+    if (!document.getElementById('image-modal')) {
+        const modalHtml = `
+            <div id="image-modal">
+                <span id="image-modal-close">&times;</span>
+                <img id="image-modal-content" src="" alt="Expanded Image">
+            </div>
+        `;
+        document.body.insertAdjacentHTML('beforeend', modalHtml);
+    }
+
+    const modal = document.getElementById('image-modal');
+    const modalImg = document.getElementById('image-modal-content');
+    const modalClose = document.getElementById('image-modal-close');
+
+    if (modalClose) {
+        modalClose.addEventListener('click', () => {
+            modal.style.display = 'none';
+        });
+    }
+    if (modal) {
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                modal.style.display = 'none';
+            }
+        });
+    }
+
     // データの読み込み
     const [usersRes, postsRes, trendsRes] = await Promise.all([
         fetch('data/users.json'),
@@ -22,13 +50,26 @@ document.addEventListener('DOMContentLoaded', async () => {
     const userMap = new Map();
     users.forEach(u => userMap.set(u.id, u));
 
-    // アイコンのHTML/スタイルを生成するヘルパー関数
     function createIconHtml(user, customStyle = '') {
         if (user.iconImage && user.iconImage !== "") {
             return `<div class="post-icon" style="background-image: url('${user.iconImage}'); ${customStyle}"></div>`;
         } else {
             return `<div class="post-icon" style="${customStyle}">${user.icon}</div>`;
         }
+    }
+
+    // X風アクションバーのHTMLを生成するヘルパー関数
+    function createActionsHtml(post) {
+        return `
+            <div class="post-actions" onclick="event.stopPropagation();">
+                <div class="post-action-item reply">💬 <span>${post.comments || 0}</span></div>
+                <div class="post-action-item repost">🔄 <span>${post.reposts || 0}</span></div>
+                <div class="post-action-item like">❤️ <span>${post.likes || 0}</span></div>
+                <div class="post-action-item view">📊 <span>${post.views || '2.2万'}</span></div>
+                <div class="post-action-item bookmark">🔖</div>
+                <div class="post-action-item share">⤴</div>
+            </div>
+        `;
     }
 
     // プロフィールページの処理
@@ -40,11 +81,9 @@ document.addEventListener('DOMContentLoaded', async () => {
             document.getElementById('profile-account').textContent = profileUser.account;
             document.getElementById('profile-bio').textContent = profileUser.bio;
             
-            // フォロー・フォロワー数
             document.getElementById('profile-following').textContent = profileUser.following || 0;
             document.getElementById('profile-followers').textContent = profileUser.followers || 0;
             
-            // プロフィール大アイコンの切替
             const largeIconElem = document.getElementById('profile-icon');
             if (profileUser.iconImage && profileUser.iconImage !== "") {
                 largeIconElem.textContent = "";
@@ -62,7 +101,6 @@ document.addEventListener('DOMContentLoaded', async () => {
                 bannerElement.style.backgroundColor = profileUser.bannerColor;
             }
 
-            // タブ切り替えのイベント設定
             const tabs = document.querySelectorAll('.profile-tab');
             tabs.forEach(tab => {
                 tab.addEventListener('click', (e) => {
@@ -76,7 +114,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     }
 
-    // プロフィール画面のタブごとのコンテンツ描画
     function renderProfileTabContent(tabType, profileUser) {
         const timeline = document.getElementById('timeline');
         if (!timeline) return;
@@ -85,7 +122,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (tabType === 'posts') {
             renderTimeline();
         } else if (tabType === 'media') {
-            // メディアタブ：画像付きの投稿をグリッド状に識別表示
             const mediaPosts = posts.filter(p => p.visible && p.userId === targetUserId && p.image && p.image !== "");
             
             if (mediaPosts.length === 0) {
@@ -108,7 +144,6 @@ document.addEventListener('DOMContentLoaded', async () => {
 
             timeline.appendChild(gridContainer);
         } else {
-            // その他のタブ（返信・ハイライト・いいね）
             const messages = {
                 replies: 'まだ返信はありません。',
                 highlights: 'ハイライトに登録された投稿はありません。',
@@ -147,11 +182,11 @@ document.addEventListener('DOMContentLoaded', async () => {
             const user = userMap.get(targetPost.userId);
             if (user && singleContainer) {
                 const iconHtml = createIconHtml(user);
-                const imageHtml = (targetPost.image && targetPost.image !== "") ? `<div class="post-image-container"><img src="${targetPost.image}" alt="Post image"></div>` : '';
+                const imageHtml = (targetPost.image && targetPost.image !== "") ? `<div class="post-image-container" id="detail-img-box"><img src="${targetPost.image}" alt="Post image"></div>` : '';
                 
                 singleContainer.innerHTML = `
-                    <div class="single-post">
-                        <div class="single-post-header">
+                    <div class="single-post" style="padding: 15px 20px;">
+                        <div class="post-header" style="margin-bottom: 12px;">
                             ${iconHtml}
                             <div>
                                 <div class="post-name">
@@ -160,21 +195,27 @@ document.addEventListener('DOMContentLoaded', async () => {
                                 <div class="post-account">${user.account}</div>
                             </div>
                         </div>
-                        <div class="single-post-text">${targetPost.text}</div>
+                        <div class="post-text" style="font-size: 17px;">${targetPost.text}</div>
                         ${imageHtml}
-                        <div class="single-post-meta">${targetPost.timestamp}</div>
-                        <div class="single-post-stats">
-                            <span><strong>${targetPost.reposts}</strong> リポスト</span>
-                            <span><strong>${targetPost.likes}</strong> いいね</span>
-                        </div>
+                        <div style="color: var(--text-muted); font-size: 14px; padding: 12px 0; border-bottom: 1px solid var(--border-color);">${targetPost.timestamp}</div>
+                        ${createActionsHtml(targetPost)}
                     </div>
                 `;
+
+                // 詳細ページの画像クリックで拡大
+                const imgBox = document.getElementById('detail-img-box');
+                if (imgBox) {
+                    imgBox.addEventListener('click', () => {
+                        modalImg.src = targetPost.image;
+                        modal.style.display = 'flex';
+                    });
+                }
             }
 
             if (repliesContainer) {
                 repliesContainer.innerHTML = `
-                    <div class="reply-post">
-                        <div class="post-icon" style="width:38px; height:38px; font-size:14px;">N</div>
+                    <div class="post">
+                        <div class="post-icon" style="width:40px; height:40px; font-size:14px;">N</div>
                         <div class="post-content">
                             <div class="post-header">
                                 <span class="post-name">名無しさん</span>
@@ -182,6 +223,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                                 <span class="post-time">· 11:10 AM</span>
                             </div>
                             <div class="post-text">これ本当に対策したほうがいいよ……。</div>
+                            ${createActionsHtml({comments: 0, reposts: 0, likes: 0, views: '120'})}
                         </div>
                     </div>
                 `;
@@ -189,13 +231,12 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     }
 
-    // タイムライン描画関数（固定ツイートを常に一番上に配置する機能付き）
+    // タイムライン描画関数
     function renderTimeline(filterKeyword = '') {
         const timeline = document.getElementById('timeline');
         if (!timeline) return;
         timeline.innerHTML = '';
 
-        // 固定ツイート（pinned: true）を先頭にするため、配列を並び替え
         const sortedPosts = [...posts].sort((a, b) => {
             if (a.pinned) return -1;
             if (b.pinned) return 1;
@@ -220,22 +261,24 @@ document.addEventListener('DOMContentLoaded', async () => {
             const postElement = document.createElement('div');
             postElement.className = 'post';
             postElement.addEventListener('click', (e) => {
-                if (e.target.tagName === 'A') return;
+                if (e.target.tagName === 'A' || e.target.closest('.post-action-item') || e.target.closest('.post-image-container')) return;
                 window.location.href = `post.html?id=${post.id}`;
             });
 
             const iconHtml = createIconHtml(user);
             
-            // 固定ツイート用の「ピン留め」表示
             let pinHtml = '';
             if (post.pinned && isProfilePage) {
                 pinHtml = `<div class="pin-header">📌 ピン留めされたポスト</div>`;
             }
 
-            // 画像がある場合のHTML生成
             let imageHtml = '';
             if (post.image && post.image !== "") {
-                imageHtml = `<div class="post-image-container"><img src="${post.image}" alt="Post image"></div>`;
+                imageHtml = `
+                    <div class="post-image-container timeline-img-trigger">
+                        <img src="${post.image}" alt="Post image">
+                    </div>
+                `;
             }
 
             postElement.innerHTML = `
@@ -251,13 +294,20 @@ document.addEventListener('DOMContentLoaded', async () => {
                     </div>
                     <div class="post-text">${post.text}</div>
                     ${imageHtml}
-                    <div class="post-actions">
-                        <span>💬 ${post.comments}</span>
-                        <span>🔄 ${post.reposts}</span>
-                        <span>❤️ ${post.likes}</span>
-                    </div>
+                    ${createActionsHtml(post)}
                 </div>
             `;
+
+            // タイムライン上の画像クリックで拡大ポップアップ表示
+            const imgTrigger = postElement.querySelector('.timeline-img-trigger');
+            if (imgTrigger && post.image) {
+                imgTrigger.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    modalImg.src = post.image;
+                    modal.style.display = 'flex';
+                });
+            }
+
             timeline.appendChild(postElement);
         });
     }
