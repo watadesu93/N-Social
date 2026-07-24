@@ -6,9 +6,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     const urlParams = new URLSearchParams(window.location.search);
     const targetUserId = urlParams.get('id') || 'user1';
     const searchQuery = urlParams.get('q') || '';
-    const targetPostId = parseInt(urlParams.get('id')) || 1; // 投稿詳細用ID
+    const targetPostId = parseInt(urlParams.get('id')) || 1;
 
-    // データの読み込み
     const [usersRes, postsRes, trendsRes] = await Promise.all([
         fetch('data/users.json'),
         fetch('data/posts.json'),
@@ -22,6 +21,15 @@ document.addEventListener('DOMContentLoaded', async () => {
     const userMap = new Map();
     users.forEach(u => userMap.set(u.id, u));
 
+    // アイコンのHTML/スタイルを生成するヘルパー関数
+    function createIconHtml(user, customStyle = '') {
+        if (user.iconImage && user.iconImage !== "") {
+            return `<div class="post-icon" style="background-image: url('${user.iconImage}'); ${customStyle}"></div>`;
+        } else {
+            return `<div class="post-icon" style="${customStyle}">${user.icon}</div>`;
+        }
+    }
+
     // プロフィールページの処理
     if (isProfilePage) {
         const profileUser = userMap.get(targetUserId);
@@ -29,8 +37,18 @@ document.addEventListener('DOMContentLoaded', async () => {
             document.getElementById('profile-header-name').textContent = profileUser.name;
             document.getElementById('profile-name').textContent = profileUser.name;
             document.getElementById('profile-account').textContent = profileUser.account;
-            document.getElementById('profile-icon').textContent = profileUser.icon;
             document.getElementById('profile-bio').textContent = profileUser.bio;
+            
+            // プロフィール大アイコンの切替
+            const largeIconElem = document.getElementById('profile-icon');
+            if (profileUser.iconImage && profileUser.iconImage !== "") {
+                largeIconElem.textContent = "";
+                largeIconElem.style.backgroundImage = `url('${profileUser.iconImage}')`;
+                largeIconElem.style.backgroundSize = "cover";
+                largeIconElem.style.backgroundPosition = "center";
+            } else {
+                largeIconElem.textContent = profileUser.icon;
+            }
             
             const bannerElement = document.querySelector('.profile-banner');
             if (profileUser.bannerImage && profileUser.bannerImage !== "") {
@@ -61,10 +79,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (targetPost) {
             const user = userMap.get(targetPost.userId);
             if (user && singleContainer) {
+                const iconHtml = createIconHtml(user);
                 singleContainer.innerHTML = `
                     <div class="single-post">
                         <div class="single-post-header">
-                            <div class="post-icon">${user.icon}</div>
+                            ${iconHtml}
                             <div>
                                 <div class="post-name">
                                     <a href="profile.html?id=${user.id}" class="link-text">${user.name}</a>
@@ -82,9 +101,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 `;
             }
 
-            // 返信（フェイクのリプライや紐づくコメントの表示）
             if (repliesContainer) {
-                // サンプルとして、同じユーザーや別ユーザーからのリプライを表示
                 repliesContainer.innerHTML = `
                     <div class="reply-post">
                         <div class="post-icon" style="width:38px; height:38px; font-size:14px;">N</div>
@@ -102,7 +119,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     }
 
-    // タイムライン描画関数（ホーム・プロフィール・検索用）
+    // タイムライン描画関数
     function renderTimeline(filterKeyword = '') {
         const timeline = document.getElementById('timeline');
         if (!timeline) return;
@@ -125,15 +142,15 @@ document.addEventListener('DOMContentLoaded', async () => {
 
             const postElement = document.createElement('div');
             postElement.className = 'post';
-            // 投稿をクリックしたら詳細ページへ飛ぶようにする
             postElement.addEventListener('click', (e) => {
-                // 名前部分（プロフィールリンク）をクリックしたときは詳細ページに飛ばないようにする
                 if (e.target.tagName === 'A') return;
                 window.location.href = `post.html?id=${post.id}`;
             });
 
+            const iconHtml = createIconHtml(user);
+
             postElement.innerHTML = `
-                <div class="post-icon">${user.icon}</div>
+                ${iconHtml}
                 <div class="post-content">
                     <div class="post-header">
                         <span class="post-name">
