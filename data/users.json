@@ -4,16 +4,18 @@
     "name": "燦燦あかり",
     "account": "@Akari",
     "icon": "A",
-    "bio": "新人Vtuberの燦燦あかりです！毎日21時から配信中✨\nホラーゲームと歌うことが大好きです！チャンネル登録よろしくね！",
+    "iconImage": "images/akari_icon.png",
+    "bio": "新人Vtuberの燦燦あかりです！毎日21時から配信中✨\みんなとお話しすることが大好きです！チャンネル登録よろしくね！",
     "bannerColor": "#8a2be2",
     "bannerImage": "images/akari_banner.png"
   },
   {
     "id": "user2",
-    "name": "名無しさん",
+    "name": "草",
     "account": "@nanashi_774",
-    "icon": "N",
-    "bio": "ゲームとネットサーフィンが趣味。最近変なノイズが聞こえる。",
+    "icon": "草",
+    "iconImage": "",
+    "bio": "草食動物です。たまには肉食いたい",
     "bannerColor": "#38444d",
     "bannerImage": ""
   }
