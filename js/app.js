@@ -83,22 +83,47 @@ document.addEventListener('DOMContentLoaded', async () => {
         timeline.innerHTML = '';
 
         if (tabType === 'posts') {
-            // 通常の投稿一覧を描画
             renderTimeline();
+        } else if (tabType === 'media') {
+            // メディアタブ：画像付きの投稿をグリッド状に識別表示
+            const mediaPosts = posts.filter(p => p.visible && p.userId === targetUserId && p.image && p.image !== "");
+            
+            if (mediaPosts.length === 0) {
+                renderEmptyMessage('メディア付きの投稿はありません。');
+                return;
+            }
+
+            const gridContainer = document.createElement('div');
+            gridContainer.className = 'media-grid';
+
+            mediaPosts.forEach(post => {
+                const gridItem = document.createElement('div');
+                gridItem.className = 'media-grid-item';
+                gridItem.style.backgroundImage = `url('${post.image}')`;
+                gridItem.addEventListener('click', () => {
+                    window.location.href = `post.html?id=${post.id}`;
+                });
+                gridContainer.appendChild(gridItem);
+            });
+
+            timeline.appendChild(gridContainer);
         } else {
-            // 返信・ハイライト・メディア・いいねタブのダミー表示
+            // その他のタブ（返信・ハイライト・いいね）
             const messages = {
                 replies: 'まだ返信はありません。',
                 highlights: 'ハイライトに登録された投稿はありません。',
-                media: 'メディア付きの投稿はありません。',
                 likes: 'いいねした投稿は非公開です。'
             };
-
-            const emptyDiv = document.createElement('div');
-            emptyDiv.style.cssText = 'padding: 40px; text-align: center; color: var(--text-muted); font-size: 15px;';
-            emptyDiv.textContent = messages[tabType] || '投稿はありません。';
-            timeline.appendChild(emptyDiv);
+            renderEmptyMessage(messages[tabType] || '投稿はありません。');
         }
+    }
+
+    function renderEmptyMessage(text) {
+        const timeline = document.getElementById('timeline');
+        const emptyDiv = document.createElement('div');
+        emptyDiv.style.cssText = 'padding: 40px; text-align: center; color: var(--text-muted); font-size: 15px;';
+        emptyDiv.textContent = text;
+        timeline.appendChild(emptyDiv);
     }
 
     // 検索ページの処理
@@ -122,6 +147,8 @@ document.addEventListener('DOMContentLoaded', async () => {
             const user = userMap.get(targetPost.userId);
             if (user && singleContainer) {
                 const iconHtml = createIconHtml(user);
+                const imageHtml = (targetPost.image && targetPost.image !== "") ? `<div class="post-image-container"><img src="${targetPost.image}" alt="Post image"></div>` : '';
+                
                 singleContainer.innerHTML = `
                     <div class="single-post">
                         <div class="single-post-header">
@@ -134,6 +161,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                             </div>
                         </div>
                         <div class="single-post-text">${targetPost.text}</div>
+                        ${imageHtml}
                         <div class="single-post-meta">${targetPost.timestamp}</div>
                         <div class="single-post-stats">
                             <span><strong>${targetPost.reposts}</strong> リポスト</span>
@@ -161,13 +189,20 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     }
 
-    // タイムライン描画関数
+    // タイムライン描画関数（固定ツイートを常に一番上に配置する機能付き）
     function renderTimeline(filterKeyword = '') {
         const timeline = document.getElementById('timeline');
         if (!timeline) return;
         timeline.innerHTML = '';
 
-        posts.forEach(post => {
+        // 固定ツイート（pinned: true）を先頭にするため、配列を並び替え
+        const sortedPosts = [...posts].sort((a, b) => {
+            if (a.pinned) return -1;
+            if (b.pinned) return 1;
+            return 0;
+        });
+
+        sortedPosts.forEach(post => {
             if (!post.visible) return;
 
             const user = userMap.get(post.userId);
@@ -190,10 +225,23 @@ document.addEventListener('DOMContentLoaded', async () => {
             });
 
             const iconHtml = createIconHtml(user);
+            
+            // 固定ツイート用の「ピン留め」表示
+            let pinHtml = '';
+            if (post.pinned && isProfilePage) {
+                pinHtml = `<div class="pin-header">📌 ピン留めされたポスト</div>`;
+            }
+
+            // 画像がある場合のHTML生成
+            let imageHtml = '';
+            if (post.image && post.image !== "") {
+                imageHtml = `<div class="post-image-container"><img src="${post.image}" alt="Post image"></div>`;
+            }
 
             postElement.innerHTML = `
                 ${iconHtml}
                 <div class="post-content">
+                    ${pinHtml}
                     <div class="post-header">
                         <span class="post-name">
                             <a href="profile.html?id=${user.id}" class="link-text">${user.name}</a>
@@ -202,6 +250,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                         <span class="post-time">· ${post.timestamp}</span>
                     </div>
                     <div class="post-text">${post.text}</div>
+                    ${imageHtml}
                     <div class="post-actions">
                         <span>💬 ${post.comments}</span>
                         <span>🔄 ${post.reposts}</span>

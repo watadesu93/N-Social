@@ -2,25 +2,25 @@
   {
     "id": 1,
     "userId": "user1",
-    "text": "今日も配信ありがとう！最高だったよー！",
-    "likes": 542,
-    "comments": 31,
-    "reposts": 12,
-    "timestamp": "10:45 AM",
-    "chapter": 1,
-    "flag": "",
-    "visible": true
+    "text": "🌸 はじめまして！ 🌸\n新人VTuberの 燦燦あかり（さんさん あかり） です☀️✨\nみんなとおしゃべりしたり、ゲームを楽しんだり、笑顔になれる時間をお届けできるように活動しています！\n\n🎮 配信内容\n・ゲーム実況\n・雑談\n・参加型配信\n・歌（たまに♪）\n\n💖 「初見さん大歓迎！」\n気軽にコメントしてくれるとうれしいです！\nみんなで楽しく、あたたかい場所を作っていこうね✨\n\n🌟 よかったら\n♡・RP・フォローで応援よろしくお願いします！\n#新人VTuber #VTuber #VTuber好きと繋がりたい",
+    "image": "images/post_sample1.png",
+    "timestamp": "2024年6月",
+    "comments": 3,
+    "reposts": 28,
+    "likes": 50,
+    "visible": true,
+    "pinned": true
   },
   {
     "id": 2,
-    "userId": "user2",
-    "text": "さっきの配信のあれ、なんだったんだろう……気のせい？",
-    "likes": 12,
-    "comments": 3,
+    "userId": "user1",
+    "text": "今日も配信来てくれてありがとう！みんなと話せてすごく楽しかったよ～！\nまた次の配信でね！おやすみ～🌙",
+    "image": "",
+    "timestamp": "昨日",
+    "comments": 2,
     "reposts": 5,
-    "timestamp": "11:02 AM",
-    "chapter": 1,
-    "flag": "Event_01",
-    "visible": true
+    "likes": 20,
+    "visible": true,
+    "pinned": false
   }
 ]
