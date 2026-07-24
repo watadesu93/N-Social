@@ -7,16 +7,20 @@
     "iconImage": "images/akari_icon.png",
     "bio": "新人Vtuberの燦燦あかりです！みんなとお話しすることが大好き",
     "bannerColor": "#8a2be2",
-    "bannerImage": "images/akari_banner.png"
+    "bannerImage": "images/akari_banner.png",
+    "following": 142,
+    "followers": 1580
   },
   {
-    "id": "kusa93",
+    "id": "user2",
     "name": "草",
     "account": "@kusa9393",
     "icon": "草",
     "iconImage": "",
     "bio": "草食系です。たまには肉が食いたい",
     "bannerColor": "#38444d",
-    "bannerImage": ""
+    "bannerImage": "",
+    "following": 93,
+    "followers": 93
   }
 ]
