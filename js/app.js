@@ -8,6 +8,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const searchQuery = urlParams.get('q') || '';
     const targetPostId = parseInt(urlParams.get('id')) || 1;
 
+    // データの読み込み
     const [usersRes, postsRes, trendsRes] = await Promise.all([
         fetch('data/users.json'),
         fetch('data/posts.json'),
@@ -38,10 +39,19 @@ document.addEventListener('DOMContentLoaded', async () => {
             document.getElementById('profile-name').textContent = profileUser.name;
             document.getElementById('profile-account').textContent = profileUser.account;
             document.getElementById('profile-bio').textContent = profileUser.bio;
-           
-            // 追加：フォロー・フォロワー数の反映
+            
+            // フォロー・フォロワー数
             document.getElementById('profile-following').textContent = profileUser.following || 0;
             document.getElementById('profile-followers').textContent = profileUser.followers || 0;
+            
+            // ママ表記の反映
+            const mamaElement = document.getElementById('profile-mama');
+            if (profileUser.mama && profileUser.mama !== "") {
+                mamaElement.textContent = `🎨 ﾃﾞｻﾞｲﾝ/ﾏﾏ: ${profileUser.mama}`;
+                mamaElement.style.display = "block";
+            } else {
+                mamaElement.style.display = "none";
+            }
             
             // プロフィール大アイコンの切替
             const largeIconElem = document.getElementById('profile-icon');

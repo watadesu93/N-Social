@@ -9,10 +9,11 @@
     "bannerColor": "#8a2be2",
     "bannerImage": "images/akari_banner.png",
     "following": 142,
-    "followers": 1580
+    "followers": 1580,
+    "mama": "mama: 旧東京 / Live2Dモデリング: すねぶ"
   },
   {
-    "id": "user2",
+    "id": "kusa93",
     "name": "草",
     "account": "@kusa9393",
     "icon": "草",
@@ -21,6 +22,7 @@
     "bannerColor": "#38444d",
     "bannerImage": "",
     "following": 93,
-    "followers": 93
+    "followers": 93,
+    "mama": "自作"
   }
 ]
