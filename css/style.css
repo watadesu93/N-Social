@@ -247,3 +247,60 @@ body {
 .search-input:focus {
   border-color: var(--accent-color);
 }
+
+/* --------------------
+   投稿詳細ページ用
+-------------------- */
+.single-post {
+  padding: 20px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.single-post-header {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.single-post-text {
+  font-size: 18px;
+  margin-bottom: 20px;
+  white-space: pre-wrap;
+  line-height: 1.6;
+}
+
+.single-post-meta {
+  color: var(--text-muted);
+  font-size: 14px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid var(--border-color);
+  margin-bottom: 15px;
+}
+
+.single-post-stats {
+  display: flex;
+  gap: 30px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid var(--border-color);
+  margin-bottom: 15px;
+  font-size: 15px;
+}
+
+.single-post-stats span strong {
+  color: var(--text-main);
+}
+
+/* リプライ（返信）用のスタイル */
+.reply-post {
+  padding: 15px 20px;
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  gap: 15px;
+  background-color: rgba(29, 42, 53, 0.4);
+  transition: background-color 0.2s;
+}
+
+.reply-post:hover {
+  background-color: var(--hover-bg);
+}
