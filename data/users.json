@@ -2,15 +2,14 @@
   {
     "id": "user1",
     "name": "燦燦あかり",
-    "account": "@Akari",
+    "account": "@SanSanAkari",
     "icon": "A",
     "iconImage": "images/akari_icon.png",
-    "bio": "新人Vtuberの燦燦あかりです！みんなとお話しすることが大好き",
+    "bio": "新人Vtuberの燦燦あかりです！みんなとお話しすることが大好き\nﾏﾏ🎨 旧東京 / Live2Dモデリング: すねぶ",
     "bannerColor": "#8a2be2",
     "bannerImage": "images/akari_banner.png",
     "following": 142,
-    "followers": 1580,
-    "mama": "mama: 旧東京 / Live2Dモデリング: すねぶ"
+    "followers": 1580
   },
   {
     "id": "kusa93",
@@ -22,7 +21,6 @@
     "bannerColor": "#38444d",
     "bannerImage": "",
     "following": 93,
-    "followers": 93,
-    "mama": "自作"
+    "followers": 93
   }
 ]
