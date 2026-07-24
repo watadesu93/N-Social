@@ -3,12 +3,18 @@
     "id": "user1",
     "name": "燦燦あかり",
     "account": "@Akari",
-    "icon": "A"
+    "icon": "A",
+    "bio": "新人Vtuberの燦燦あかりです！毎日21時から配信中✨\nホラーゲームと歌うことが大好きです！チャンネル登録よろしくね！",
+    "bannerColor": "#8a2be2",
+    "bannerImage": "images/akari_banner.png"
   },
   {
     "id": "user2",
     "name": "名無しさん",
     "account": "@nanashi_774",
-    "icon": "N"
+    "icon": "N",
+    "bio": "ゲームとネットサーフィンが趣味。最近変なノイズが聞こえる。",
+    "bannerColor": "#38444d",
+    "bannerImage": ""
   }
 ]
