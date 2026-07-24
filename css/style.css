@@ -223,3 +223,27 @@ body {
 .link-text:hover {
   text-decoration: underline;
 }
+
+/* --------------------
+   検索ページ用
+-------------------- */
+.search-box-container {
+  padding: 15px 20px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.search-input {
+  width: 100%;
+  padding: 12px 20px;
+  background-color: var(--hover-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 30px;
+  color: var(--text-main);
+  font-size: 15px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.search-input:focus {
+  border-color: var(--accent-color);
+}
