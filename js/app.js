@@ -212,21 +212,65 @@ document.addEventListener('DOMContentLoaded', async () => {
                 }
             }
 
+            // 指定した投稿（targetPostId）に対するリプライ（replyToが一致するもの）を抽出して描画
             if (repliesContainer) {
-                repliesContainer.innerHTML = `
-                    <div class="post">
-                        <div class="post-icon" style="width:40px; height:40px; font-size:14px;">N</div>
-                        <div class="post-content">
-                            <div class="post-header">
-                                <span class="post-name">名無しさん</span>
-                                <span class="post-account">@nanashi_774</span>
-                                <span class="post-time">· 11:10 AM</span>
+                repliesContainer.innerHTML = '';
+                const replies = posts.filter(p => p.replyTo === targetPostId && p.visible);
+
+                if (replies.length > 0) {
+                    replies.forEach(replyPost => {
+                        const replyUser = userMap.get(replyPost.userId);
+                        if (!replyUser) return;
+
+                        const replyElement = document.createElement('div');
+                        replyElement.className = 'post';
+                        replyElement.addEventListener('click', (e) => {
+                            if (e.target.tagName === 'A' || e.target.closest('.post-action-item') || e.target.closest('.post-image-container')) return;
+                            window.location.href = `post.html?id=${replyPost.id}`;
+                        });
+
+                        const replyIconHtml = createIconHtml(replyUser);
+                        let replyImageHtml = '';
+                        if (replyPost.image && replyPost.image !== "") {
+                            replyImageHtml = `
+                                <div class="post-image-container timeline-img-trigger">
+                                    <img src="${replyPost.image}" alt="Post image">
+                                </div>
+                            `;
+                        }
+
+                        replyElement.innerHTML = `
+                            ${replyIconHtml}
+                            <div class="post-content">
+                                <div class="post-header">
+                                    <span class="post-name">
+                                        <a href="profile.html?id=${replyUser.id}" class="link-text">${replyUser.name}</a>
+                                    </span>
+                                    <span class="post-account">${replyUser.account}</span>
+                                    <span class="post-time">· ${replyPost.timestamp}</span>
+                                </div>
+                                <div class="post-text">${replyPost.text}</div>
+                                ${replyImageHtml}
+                                ${createActionsHtml(replyPost)}
                             </div>
-                            <div class="post-text">これ本当に対策したほうがいいよ……。</div>
-                            ${createActionsHtml({comments: 0, reposts: 0, likes: 0, views: '120'})}
-                        </div>
-                    </div>
-                `;
+                        `;
+
+                        // リプライ内の画像クリック拡大
+                        const imgTrigger = replyElement.querySelector('.timeline-img-trigger');
+                        if (imgTrigger && replyPost.image) {
+                            imgTrigger.addEventListener('click', (e) => {
+                                e.stopPropagation();
+                                modalImg.src = replyPost.image;
+                                modal.style.display = 'flex';
+                            });
+                        }
+
+                        repliesContainer.appendChild(replyElement);
+                    });
+                } else {
+                    // 返信が一件もない場合
+                    renderEmptyMessage('このポストへの返信はありません。');
+                }
             }
         }
     }
@@ -298,7 +342,6 @@ document.addEventListener('DOMContentLoaded', async () => {
                 </div>
             `;
 
-            // タイムライン上の画像クリックで拡大ポップアップ表示
             const imgTrigger = postElement.querySelector('.timeline-img-trigger');
             if (imgTrigger && post.image) {
                 imgTrigger.addEventListener('click', (e) => {
