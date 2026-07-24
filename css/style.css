@@ -1,0 +1,205 @@
+:root {
+  --bg-color: #15202b;       /* 背景色 */
+  --hover-bg: #1e2732;       /* ホバー時の背景色（X風） */
+  --accent-color: #8a2be2;   /* アクセントの紫 */
+  --text-main: #ffffff;
+  --text-muted: #8899a6;
+  --border-color: #38444d;   /* 境界線の色 */
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: var(--bg-color);
+  color: var(--text-main);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+}
+
+.container {
+  display: flex;
+  justify-content: center;
+  max-width: 1250px;
+  margin: 0 auto;
+  min-height: 100vh;
+}
+
+/* --------------------
+   左カラム：メニュー
+-------------------- */
+.sidebar-left {
+  width: 275px;
+  padding: 10px 20px;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.logo {
+  font-size: 24px;
+  font-weight: bold;
+  color: var(--text-main); /* Xっぽく白に */
+  padding: 15px;
+  margin-bottom: 10px;
+}
+
+.nav-item {
+  padding: 15px 20px;
+  font-size: 20px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  border-radius: 30px;
+  width: fit-content;
+  margin-bottom: 5px;
+}
+
+.nav-item:hover {
+  background-color: var(--hover-bg);
+}
+
+/* --------------------
+   中央カラム：タイムライン
+-------------------- */
+.main-content {
+  width: 600px;
+  border-left: 1px solid var(--border-color);
+  border-right: 1px solid var(--border-color);
+  min-height: 100vh;
+}
+
+.page-title {
+  padding: 15px 20px;
+  font-size: 20px;
+  font-weight: bold;
+  border-bottom: 1px solid var(--border-color);
+  backdrop-filter: blur(10px);
+  position: sticky;
+  top: 0;
+  background-color: rgba(21, 32, 43, 0.85);
+  z-index: 10;
+  cursor: pointer;
+}
+
+.post {
+  padding: 15px 20px;
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  gap: 15px;
+  transition: background-color 0.2s;
+  cursor: pointer;
+}
+
+.post:hover {
+  background-color: var(--hover-bg);
+}
+
+.post-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background-color: var(--accent-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  flex-shrink: 0;
+}
+
+.post-content {
+  width: 100%;
+}
+
+.post-header {
+  display: flex;
+  gap: 5px;
+  align-items: baseline;
+  margin-bottom: 2px;
+}
+
+.post-name {
+  font-weight: bold;
+}
+
+.post-account, .post-time {
+  color: var(--text-muted);
+  font-size: 15px;
+}
+
+.post-text {
+  font-size: 15px;
+  margin-bottom: 10px;
+  white-space: pre-wrap; /* 改行を反映 */
+}
+
+.post-actions {
+  display: flex;
+  justify-content: space-between;
+  max-width: 400px;
+  color: var(--text-muted);
+  font-size: 14px;
+}
+
+.post-actions span {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 50%;
+  transition: color 0.2s, background-color 0.2s;
+}
+
+.post-actions span:hover {
+  color: var(--accent-color);
+  background-color: rgba(138, 43, 226, 0.1);
+}
+
+/* --------------------
+   右カラム：トレンド
+-------------------- */
+.sidebar-right {
+  width: 350px;
+  padding: 15px 20px;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+}
+
+.trend-card {
+  background-color: var(--hover-bg); /* Xの右カラム風の少し浮いた色 */
+  border-radius: 15px;
+  padding: 15px 0;
+}
+
+.trend-card h2 {
+  font-size: 20px;
+  font-weight: bold;
+  padding: 0 15px 15px 15px;
+}
+
+.trend-item {
+  padding: 10px 15px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.trend-item:hover {
+  background-color: rgba(255, 255, 255, 0.03);
+}
+
+.trend-keyword {
+  font-weight: bold;
+  display: block;
+}
+
+.trend-count {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
