@@ -315,3 +315,19 @@ body {
   /* 画像がない場合に備えて文字色やフォントの設定も残す */
   color: var(--text-main);
 }
+
+/* --------------------
+   フォロー・フォロワー表示用
+-------------------- */
+.profile-stats {
+  display: flex;
+  gap: 20px;
+  margin-top: 15px;
+  font-size: 14px;
+  color: var(--text-muted);
+}
+
+.profile-stats span strong {
+  color: var(--text-main);
+  margin-right: 4px;
+}
