@@ -1,0 +1,26 @@
+[
+  {
+    "id": 1,
+    "userId": "user1",
+    "text": "今日も配信ありがとう！最高だったよー！",
+    "likes": 542,
+    "comments": 31,
+    "reposts": 12,
+    "timestamp": "10:45 AM",
+    "chapter": 1,
+    "flag": "",
+    "visible": true
+  },
+  {
+    "id": 2,
+    "userId": "user2",
+    "text": "さっきの配信のあれ、なんだったんだろう……気のせい？",
+    "likes": 12,
+    "comments": 3,
+    "reposts": 5,
+    "timestamp": "11:02 AM",
+    "chapter": 1,
+    "flag": "Event_01",
+    "visible": true
+  }
+]
