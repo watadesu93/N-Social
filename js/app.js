@@ -1,4 +1,4 @@
-document.addEventListener('DOMContentLoaded', async () => {
+document.addEventListener('DOMContentLoaded', () => {
     const isProfilePage = window.location.pathname.includes('profile.html');
     const isSearchPage = window.location.pathname.includes('search.html');
     const isPostPage = window.location.pathname.includes('post.html');
@@ -10,19 +10,31 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     setupModals();
 
-    const [usersRes, mobUsersRes, postsRes, mobPostsRes, trendsRes] = await Promise.all([
-        fetch('data/users.json'),
-        fetch('data/mob_users.json'),
-        fetch('data/posts.json'),
-        fetch('data/mob_posts.json'),
-        fetch('data/trends.json')
-    ]);
+    // --- 【直書きデータ】 ---
+    const users = [
+        { "id": "user1", "name": "主人公", "account": "@hero", "icon": "主", "iconImage": "", "bio": "世界を救うために冒険中！", "bannerColor": "#1d9bf0", "following": 150, "followers": 1200 },
+        { "id": "user2", "name": "ヒロイン", "account": "@heroine", "icon": "ヒ", "iconImage": "", "bio": "主人公を見守る人。", "bannerColor": "#ec4899", "following": 200, "followers": 950 }
+    ];
 
-    const users = await usersRes.json();
-    const mobUsers = await mobUsersRes.json();
-    const mainPosts = await postsRes.json();
-    const mobPosts = await mobPostsRes.json();
-    const trends = await trendsRes.json();
+    const mobUsers = [
+        { "id": "mob_001", "name": "夜更かし妖精", "account": "@yoruyousei", "icon": "夜", "iconImage": "", "bio": "夜のほうが活動的です。", "bannerColor": "#4a5568", "following": 312, "followers": 140 },
+        { "id": "mob_002", "name": "ねこ缶開封係", "account": "@nekokan", "icon": "猫", "iconImage": "", "bio": "一日に何度も猫缶を開けています。", "bannerColor": "#ff8c00", "following": 520, "followers": 410 },
+        { "id": "mob_003", "name": "限界社畜くん", "account": "@genkaishachiku", "icon": "社", "iconImage": "", "bio": "今日も会社に魂を置いてきました。", "bannerColor": "#2f3136", "following": 75, "followers": 12 }
+    ];
+
+    const mainPosts = [
+        { "id": 1, "userId": "user1", "text": "ついに冒険が始まった！", "timestamp": "2時間前", "visible": true, "pinned": true, "likes": 24, "reposts": 5, "comments": 2, "views": "1.2万" }
+    ];
+
+    const mobPosts = [
+        { "id": 101, "userId": "mob_001", "text": "深夜のテンションで投稿しています。", "timestamp": "3時間前", "visible": true, "likes": 12, "reposts": 1, "comments": 0, "views": "500" }
+    ];
+
+    const trends = [
+        { "keyword": "#RPG", "postsCount": "1.5万" },
+        { "keyword": "冒険者", "postsCount": "8,200" }
+    ];
+    // ------------------------
 
     const userMap = new Map();
     users.forEach(u => userMap.set(u.id, u));
