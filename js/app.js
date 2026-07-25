@@ -36,25 +36,32 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
     }
 
-    // データの読み込み
-    const [usersRes, postsRes, trendsRes] = await Promise.all([
+    // データの読み込み（users.json と mob_users.json を両方取得する）
+    const [usersRes, mobUsersRes, postsRes, trendsRes] = await Promise.all([
         fetch('data/users.json'),
+        fetch('data/mob_users.json'),
         fetch('data/posts.json'),
         fetch('data/trends.json')
     ]);
 
     const users = await usersRes.json();
+    const mobUsers = await mobUsersRes.json();
     const posts = await postsRes.json();
     const trends = await trendsRes.json();
 
+    // メインユーザーとモブユーザーを一つのマップに結合
     const userMap = new Map();
     users.forEach(u => userMap.set(u.id, u));
+    mobUsers.forEach(u => userMap.set(u.id, u));
 
     function createIconHtml(user, customStyle = '') {
+        if (!user) {
+            return `<div class="post-icon" style="${customStyle}">？</div>`;
+        }
         if (user.iconImage && user.iconImage !== "") {
             return `<div class="post-icon" style="background-image: url('${user.iconImage}'); ${customStyle}"></div>`;
         } else {
-            return `<div class="post-icon" style="${customStyle}">${user.icon}</div>`;
+            return `<div class="post-icon" style="${customStyle}">${user.icon || '名'}</div>`;
         }
     }
 
@@ -91,7 +98,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 largeIconElem.style.backgroundSize = "cover";
                 largeIconElem.style.backgroundPosition = "center";
             } else {
-                largeIconElem.textContent = profileUser.icon;
+                largeIconElem.textContent = profileUser.icon || '名';
             }
             
             const bannerElement = document.querySelector('.profile-banner');
@@ -212,7 +219,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 }
             }
 
-            // 指定した投稿（targetPostId）に対するリプライ（replyToが一致するもの）を抽出して描画
+            // 指定した投稿に対するリプライを抽出して描画
             if (repliesContainer) {
                 repliesContainer.innerHTML = '';
                 const replies = posts.filter(p => p.replyTo === targetPostId && p.visible);
@@ -268,7 +275,6 @@ document.addEventListener('DOMContentLoaded', async () => {
                         repliesContainer.appendChild(replyElement);
                     });
                 } else {
-                    // 返信が一件もない場合
                     renderEmptyMessage('このポストへの返信はありません。');
                 }
             }
