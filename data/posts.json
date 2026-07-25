@@ -1,0 +1,28 @@
+[
+    {
+        "id": 1,
+        "userId": "user1",
+        "text": "ワタデスSNSをアップデートしました！リポストやリプライの機能がより本家に近づきました。",
+        "timestamp": "3時間",
+        "type": "normal",
+        "comments": 5,
+        "reposts": 12,
+        "likes": 48,
+        "views": "1,500",
+        "pinned": true,
+        "visible": true
+    },
+    {
+        "id": 2,
+        "userId": "user2",
+        "text": "新しいシステム、すごく使いやすくて感動しています！",
+        "timestamp": "2時間",
+        "type": "normal",
+        "comments": 1,
+        "reposts": 2,
+        "likes": 15,
+        "views": "450",
+        "pinned": false,
+        "visible": true
+    }
+]

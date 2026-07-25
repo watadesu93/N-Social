@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>プロフィール / ワタデスSNS</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="app-container">
+        <nav class="sidebar">
+            <div class="sidebar-nav">
+                <a href="index.html" class="nav-item">🏠 <span>ホーム</span></a>
+                <a href="search.html" class="nav-item">🔍 <span>検索</span></a>
+                <a href="profile.html?id=user1" class="nav-item">👤 <span>プロフィール</span></a>
+            </div>
+        </nav>
+        
+        <main class="main-content">
+            <div class="header" id="profile-header-name">プロフィール</div>
+            <div class="profile-banner"></div>
+            <div class="profile-bio-section">
+                <div class="profile-avatar-large" id="profile-icon">名</div>
+                <h2 id="profile-name" style="margin-top: 50px; font-size: 20px;"></h2>
+                <div id="profile-account" style="color: var(--text-muted); font-size: 15px; margin-bottom: 12px;"></div>
+                <div id="profile-bio" style="font-size: 15px; margin-bottom: 12px; line-height: 1.4;"></div>
+                <div style="display: flex; gap: 20px; font-size: 14px; color: var(--text-muted);">
+                    <span><strong id="profile-following" style="color: var(--text-main);">0</strong> フォロー</span>
+                    <span><strong id="profile-followers" style="color: var(--text-main);">0</strong> フォロワー</span>
+                </div>
+            </div>
+            <div class="profile-tabs">
+                <div class="profile-tab active" data-tab="posts">ポスト</div>
+                <div class="profile-tab" data-tab="replies">返信</div>
+                <div class="profile-tab" data-tab="media">メディア</div>
+            </div>
+            <div id="timeline"></div>
+        </main>
+
+        <aside class="widgets">
+            <div class="search-box">
+                <span>🔍</span>
+                <input type="text" id="global-search-input" placeholder="キーワードを検索">
+            </div>
+            <div class="trend-card">
+                <h3>トレンド</h3>
+                <div id="trend-list"></div>
+            </div>
+        </aside>
+    </div>
+    <script src="js/app.js"></script>
+</body>
+</html>

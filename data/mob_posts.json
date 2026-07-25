@@ -1,0 +1,15 @@
+[
+    {
+        "id": 101,
+        "userId": "mob1",
+        "text": "今日の街の天気はとても晴れていて気持ちがいいです。",
+        "timestamp": "1時間",
+        "type": "normal",
+        "comments": 0,
+        "reposts": 0,
+        "likes": 4,
+        "views": "120",
+        "pinned": false,
+        "visible": true
+    }
+]
