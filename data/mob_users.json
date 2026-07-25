@@ -62,7 +62,7 @@
   { "id": "mob_061", "name": "古参ぶる人", "account": "@oldfan", "icon": "古", "iconImage": "", "bio": "昔からのファンです（自称）。", "bannerColor": "#b45309", "following": 400, "followers": 310 },
   { "id": "mob_062", "name": "新規歓迎", "account": "@welcome_new", "icon": "新", "iconImage": "", "bio": "みんなで仲良くしようね。", "bannerColor": "#38bdf8", "following": 190, "followers": 150 },
   { "id": "mob_063", "name": "箱推し代表", "account": "@hakoshi", "icon": "箱", "iconImage": "", "bio": "全員まとめて愛してる。", "bannerColor": "#ec4899", "following": 520, "followers": 480 },
-  { "id": "mob_064", "name": "単推しです", "account": "@oshi_only", "icon": "単", "iconImage": "", "bio":リスナーとしての信念。", "bannerColor": "#8b5cf6", "following": 130, "followers": 110 },
+  { "id": "mob_064", "name": "単推しです", "account": "@oshi_only", "icon": "単", "iconImage": "", "bio": "リスナーとしての信念。", "bannerColor": "#8b5cf6", "following": 130, "followers": 110 },
   { "id": "mob_065", "name": "推し活記録", "account": "@oshilog", "icon": "記", "iconImage": "", "bio": "推しの活動をまとめるアカウント。", "bannerColor": "#f43f5e", "following": 240, "followers": 210 },
   { "id": "mob_066", "name": "沼の住人", "account": "@numa", "icon": "沼", "iconImage": "", "bio": "深い沼から抜け出せない。", "bannerColor": "#0f172a", "following": 330, "followers": 290 },
   { "id": "mob_067", "name": "沼落ち注意", "account": "@trapfan", "icon": "罠", "iconImage": "", "bio": "あなたもすぐこっち側だよ。", "bannerColor": "#7e22ce", "following": 130, "followers": 100 },
