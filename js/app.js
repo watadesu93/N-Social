@@ -19,6 +19,20 @@ document.addEventListener('DOMContentLoaded', async () => {
         document.body.insertAdjacentHTML('beforeend', modalHtml);
     }
 
+    // リポスト詳細・確認用モーダルのHTMLを自動生成して追加
+    if (!document.getElementById('repost-modal')) {
+        const repostModalHtml = `
+            <div id="repost-modal" style="display:none; position:fixed; z-index:9999; left:0; top:0; width:100%; height:100%; background-color:rgba(0,0,0,0.85); align-items:center; justifyContent:center;">
+                <div style="background-color: var(--card-bg); width: 90%; max-width: 500px; border-radius: 16px; border: 1px solid var(--border-color); padding: 20px; position: relative; color: var(--text-main);">
+                    <span id="repost-modal-close" style="position: absolute; top: 15px; right: 20px; font-size: 24px; cursor: pointer; color: var(--text-muted);">&times;</span>
+                    <h3 style="margin-top: 0; font-size: 16px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px;">リポストの詳細</h3>
+                    <div id="repost-modal-body" style="margin-top: 15px;"></div>
+                </div>
+            </div>
+        `;
+        document.body.insertAdjacentHTML('beforeend', repostModalHtml);
+    }
+
     const modal = document.getElementById('image-modal');
     const modalImg = document.getElementById('image-modal-content');
     const modalClose = document.getElementById('image-modal-close');
@@ -32,6 +46,22 @@ document.addEventListener('DOMContentLoaded', async () => {
         modal.addEventListener('click', (e) => {
             if (e.target === modal) {
                 modal.style.display = 'none';
+            }
+        });
+    }
+
+    // リポストモーダルの閉じる処理
+    const repostModal = document.getElementById('repost-modal');
+    const repostModalClose = document.getElementById('repost-modal-close');
+    if (repostModalClose) {
+        repostModalClose.addEventListener('click', () => {
+            repostModal.style.display = 'none';
+        });
+    }
+    if (repostModal) {
+        repostModal.addEventListener('click', (e) => {
+            if (e.target === repostModal) {
+                repostModal.style.display = 'none';
             }
         });
     }
@@ -71,18 +101,49 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     }
 
-    // X風アクションバーのHTMLを生成するヘルパー関数
+    // X風アクションバーのHTMLを生成するヘルパー関数（リポストボタンクリック時に詳細を見られるイベントを付与）
     function createActionsHtml(post) {
         return `
             <div class="post-actions" onclick="event.stopPropagation();">
                 <div class="post-action-item reply">💬 <span>${post.comments || 0}</span></div>
-                <div class="post-action-item repost">🔄 <span>${post.reposts || 0}</span></div>
+                <div class="post-action-item repost action-repost-trigger" data-post-id="${post.id}">🔄 <span>${post.reposts || 0}</span></div>
                 <div class="post-action-item like">❤️ <span>${post.likes || 0}</span></div>
                 <div class="post-action-item view">📊 <span>${post.views || '2.2万'}</span></div>
                 <div class="post-action-item bookmark">🔖</div>
                 <div class="post-action-item share">⤴</div>
             </div>
         `;
+    }
+
+    // リポスト詳細を表示する関数
+    function openRepostModal(post) {
+        const bodyElem = document.getElementById('repost-modal-body');
+        if (!post.repostedPost) {
+            // repostedPost が定義されていない場合のフォールバック表示
+            bodyElem.innerHTML = `
+                <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 10px;">この記事をリポストしたユーザー、またはリポスト元のデータです。</p>
+                <div style="padding: 10px; background: var(--bg-color); border-radius: 8px; border: 1px solid var(--border-color);">
+                    <p style="margin: 0; font-size: 14px;">このポストのリポスト数は <strong>${post.reposts || 0}</strong> 件です。</p>
+                </div>
+            `;
+        } else {
+            const originalUser = userMap.get(post.repostedPost.userId) || { name: '不明なユーザー', account: '@unknown', icon: '？' };
+            const origIconHtml = createIconHtml(originalUser, 'width: 36px; height: 36px; margin-right: 10px;');
+            bodyElem.innerHTML = `
+                <p style="color: var(--text-muted); font-size: 13px; margin-bottom: 10px;">🔄 リポスト元の投稿</p>
+                <div style="display: flex; align-items: flex-start; padding: 12px; background: var(--bg-color); border-radius: 8px; border: 1px solid var(--border-color);">
+                    ${origIconHtml}
+                    <div style="flex: 1;">
+                        <div style="display: flex; align-items: center; margin-bottom: 4px;">
+                            <span style="font-weight: bold; margin-right: 6px; font-size: 14px;">${originalUser.name}</span>
+                            <span style="color: var(--text-muted); font-size: 12px;">${originalUser.account}</span>
+                        </div>
+                        <div style="font-size: 14px; line-height: 1.4; white-space: pre-wrap;">${post.repostedPost.text}</div>
+                    </div>
+                </div>
+            `;
+        }
+        repostModal.style.display = 'flex';
     }
 
     // プロフィールページの処理
@@ -197,8 +258,15 @@ document.addEventListener('DOMContentLoaded', async () => {
                 const iconHtml = createIconHtml(user);
                 const imageHtml = (targetPost.image && targetPost.image !== "") ? `<div class="post-image-container" id="detail-img-box"><img src="${targetPost.image}" alt="Post image"></div>` : '';
                 
+                // リポスト表示用のHTMLブロック（データがある場合）
+                let repostHeaderHtml = '';
+                if (targetPost.repostedBy) {
+                    repostHeaderHtml = `<div style="color: var(--text-muted); font-size: 13px; margin-bottom: 8px;">🔄 ${targetPost.repostedBy}さんがリポストしました</div>`;
+                }
+
                 singleContainer.innerHTML = `
                     <div class="single-post" style="padding: 15px 20px;">
+                        ${repostHeaderHtml}
                         <div class="post-header" style="margin-bottom: 12px;">
                             ${iconHtml}
                             <div>
@@ -221,6 +289,14 @@ document.addEventListener('DOMContentLoaded', async () => {
                     imgBox.addEventListener('click', () => {
                         modalImg.src = targetPost.image;
                         modal.style.display = 'flex';
+                    });
+                }
+
+                // リポストボタンのイベントリスナー設定
+                const repostBtn = singleContainer.querySelector('.action-repost-trigger');
+                if (repostBtn) {
+                    repostBtn.addEventListener('click', () => {
+                        openRepostModal(targetPost);
                     });
                 }
             }
@@ -278,6 +354,14 @@ document.addEventListener('DOMContentLoaded', async () => {
                             });
                         }
 
+                        // リプライ内のリポストボタン
+                        const replyRepostBtn = replyElement.querySelector('.action-repost-trigger');
+                        if (replyRepostBtn) {
+                            replyRepostBtn.addEventListener('click', () => {
+                                openRepostModal(replyPost);
+                            });
+                        }
+
                         repliesContainer.appendChild(replyElement);
                     });
                 } else {
@@ -328,6 +412,12 @@ document.addEventListener('DOMContentLoaded', async () => {
                 pinHtml = `<div class="pin-header">📌 ピン留めされたポスト</div>`;
             }
 
+            // リポスト情報表示
+            let repostHeaderHtml = '';
+            if (post.repostedBy) {
+                repostHeaderHtml = `<div style="color: var(--text-muted); font-size: 13px; margin-bottom: 6px;">🔄 ${post.repostedBy}さんがリポストしました</div>`;
+            }
+
             let imageHtml = '';
             if (post.image && post.image !== "") {
                 imageHtml = `
@@ -341,6 +431,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 ${iconHtml}
                 <div class="post-content">
                     ${pinHtml}
+                    ${repostHeaderHtml}
                     <div class="post-header">
                         <span class="post-name">
                             <a href="profile.html?id=${user.id}" class="link-text">${user.name}</a>
@@ -348,7 +439,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                         <span class="post-account">${user.account}</span>
                         <span class="post-time">· ${post.timestamp}</span>
                     </div>
-                    <div class="post-text">${post.text}</span></div>
+                    <div class="post-text">${post.text}</div>
                     ${imageHtml}
                     ${createActionsHtml(post)}
                 </div>
@@ -360,6 +451,14 @@ document.addEventListener('DOMContentLoaded', async () => {
                     e.stopPropagation();
                     modalImg.src = post.image;
                     modal.style.display = 'flex';
+                });
+            }
+
+            // タイムライン上のリポストボタンクリック時の動作
+            const timelineRepostBtn = postElement.querySelector('.action-repost-trigger');
+            if (timelineRepostBtn) {
+                timelineRepostBtn.addEventListener('click', () => {
+                    openRepostModal(post);
                 });
             }
 
