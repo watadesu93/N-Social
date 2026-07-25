@@ -36,23 +36,29 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
     }
 
-    // データの読み込み（users.json と mob_users.json を両方取得する）
-    const [usersRes, mobUsersRes, postsRes, trendsRes] = await Promise.all([
+    // データの読み込み（ユーザー情報、ポスト、トレンドを分割ファイルからまとめて取得）
+    const [usersRes, mobUsersRes, postsRes, mobPostsRes, trendsRes] = await Promise.all([
         fetch('data/users.json'),
         fetch('data/mob_users.json'),
         fetch('data/posts.json'),
+        fetch('data/mob_posts.json'),
         fetch('data/trends.json')
     ]);
 
     const users = await usersRes.json();
     const mobUsers = await mobUsersRes.json();
-    const posts = await postsRes.json();
+    const mainPosts = await postsRes.json();
+    const mobPosts = await mobPostsRes.json();
     const trends = await trendsRes.json();
 
     // メインユーザーとモブユーザーを一つのマップに結合
     const userMap = new Map();
     users.forEach(u => userMap.set(u.id, u));
     mobUsers.forEach(u => userMap.set(u.id, u));
+
+    // メインポストとモブポストを一つの配列に結合し、IDや新しい順に並び替え
+    const posts = [...mainPosts, ...mobPosts];
+    posts.sort((a, b) => b.id - a.id);
 
     function createIconHtml(user, customStyle = '') {
         if (!user) {
@@ -342,7 +348,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                         <span class="post-account">${user.account}</span>
                         <span class="post-time">· ${post.timestamp}</span>
                     </div>
-                    <div class="post-text">${post.text}</div>
+                    <div class="post-text">${post.text}</span></div>
                     ${imageHtml}
                     ${createActionsHtml(post)}
                 </div>
