@@ -369,4 +369,36 @@ body {
 @media (max-width: 768px) {
     .sidebar { width: 80px; }
     .sidebar .nav-item span { display: none; }
+
+}
+
+/* 拡大画像のモーダル背景 */
+.image-modal {
+  display: none;
+  position: fixed;
+  z-index: 9999;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.8);
+  justify-content: center;
+  align-items: center;
+}
+
+/* 拡大された画像本体 */
+.image-modal img {
+  max-width: 90%;
+  max-height: 90%;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+}
+
+/* 投稿内の画像にポインタカーソルを合わせる */
+.post-image {
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+.post-image:hover {
+  opacity: 0.9;
 }
