@@ -47,7 +47,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             renderTimeline(userMap, postMap, posts);
         }
     } catch (error) {
-        console.error('ãƒ‡ãƒ¼ã‚¿ã®èª­ã¿è¾¼ã¿ã«å¤±æ•—ã—ã¾ã—ãŸ:', error);
+        console.error('ƒf[ƒ^‚Ì“Ç‚İ‚İ‚É¸”s‚µ‚Ü‚µ‚½:', error);
     }
 });
 
@@ -66,7 +66,7 @@ function setupModals() {
             <div id="repost-modal">
                 <div style="background-color: #000; width: 90%; max-width: 500px; border-radius: 16px; border: 1px solid #2f3336; padding: 20px; position: relative; color: #e7e9ea;">
                     <span id="repost-modal-close" style="position: absolute; top: 15px; right: 20px; font-size: 24px; cursor: pointer; color: #71767b;">&times;</span>
-                    <h3 style="margin-top: 0; font-size: 16px; border-bottom: 1px solid #2f3336; padding-bottom: 10px;">ãƒªãƒã‚¹ãƒˆã®è©³ç´°</h3>
+                    <h3 style="margin-top: 0; font-size: 16px; border-bottom: 1px solid #2f3336; padding-bottom: 10px;">ƒŠƒ|ƒXƒg‚ÌÚ×</h3>
                     <div id="repost-modal-body" style="margin-top: 15px;"></div>
                 </div>
             </div>
@@ -92,23 +92,23 @@ function showImageModal(src) {
 }
 
 function createIconHtml(user, customStyle = '') {
-    if (!user) return `<div class="post-icon" style="${customStyle}">ï¼Ÿ</div>`;
+    if (!user) return `<div class="post-icon" style="${customStyle}">H</div>`;
     if (user.iconImage && user.iconImage !== "") {
         return `<div class="post-icon" style="background-image: url('${user.iconImage}'); ${customStyle}"></div>`;
     } else {
-        return `<div class="post-icon" style="${customStyle}">${user.icon || 'å'}</div>`;
+        return `<div class="post-icon" style="${customStyle}">${user.icon || '–¼'}</div>`;
     }
 }
 
 function createActionsHtml(post) {
     return `
         <div class="post-actions" onclick="event.stopPropagation();">
-            <div class="post-action-item reply">ğŸ’¬ <span>${post.comments || 0}</span></div>
-            <div class="post-action-item repost action-repost-trigger" data-post-id="${post.id}">ğŸ”„ <span>${post.reposts || 0}</span></div>
-            <div class="post-action-item like">â¤ï¸ <span>${post.likes || 0}</span></div>
-            <div class="post-action-item view">ğŸ“Š <span>${post.views || '2.2ä¸‡'}</span></div>
-            <div class="post-action-item bookmark">ğŸ”–</div>
-            <div class="post-action-item share">â¤´</div>
+            <div class="post-action-item reply">?? <span>${post.comments || 0}</span></div>
+            <div class="post-action-item repost action-repost-trigger" data-post-id="${post.id}">?? <span>${post.reposts || 0}</span></div>
+            <div class="post-action-item like">?? <span>${post.likes || 0}</span></div>
+            <div class="post-action-item view">?? <span>${post.views || '2.2–œ'}</span></div>
+            <div class="post-action-item bookmark">??</div>
+            <div class="post-action-item share">?</div>
         </div>
     `;
 }
@@ -119,9 +119,9 @@ function openRepostModal(post, userMap, postMap) {
     const targetOriginal = postMap.get(post.repostPostId);
 
     if (!targetOriginal) {
-        bodyElem.innerHTML = `<p style="color: #71767b; font-size: 14px;">å…ƒæŠ•ç¨¿ãŒè¦‹ã¤ã‹ã‚Šã¾ã›ã‚“ã€‚</p>`;
+        bodyElem.innerHTML = `<p style="color: #71767b; font-size: 14px;">Œ³“Še‚ªŒ©‚Â‚©‚è‚Ü‚¹‚ñB</p>`;
     } else {
-        const origUser = userMap.get(targetOriginal.userId) || { name: 'ä¸æ˜', account: '@unknown', icon: 'ï¼Ÿ' };
+        const origUser = userMap.get(targetOriginal.userId) || { name: '•s–¾', account: '@unknown', icon: 'H' };
         bodyElem.innerHTML = `
             <div style="display: flex; align-items: flex-start; padding: 12px; background: #16181c; border-radius: 8px; border: 1px solid #2f3336; cursor: pointer;" onclick="window.location.href='post.html?id=${targetOriginal.id}'">
                 ${createIconHtml(origUser, 'width: 36px; height: 36px; margin-right: 10px;')}
@@ -138,8 +138,7 @@ function openRepostModal(post, userMap, postMap) {
     repostModal.style.display = 'flex';
 }
 
-// ç¬¬2å¼•æ•°ã« isProfile (ãƒ—ãƒ­ãƒ•ã‚£ãƒ¼ãƒ«ç”»é¢ã‹ã©ã†ã‹) ã‚’è¿½åŠ 
-function renderPost(post, userMap, postMap, isProfile = false) {
+function renderPost(post, userMap, postMap, showPinHeader = false) {
     const user = userMap.get(post.userId);
     if (!user) return null;
 
@@ -154,7 +153,7 @@ function renderPost(post, userMap, postMap, isProfile = false) {
         const originalPost = postMap.get(post.repostPostId);
         const origUser = originalPost ? userMap.get(originalPost.userId) : null;
         
-        let originalContentHtml = `<div style="color: #71767b; font-size: 14px;">å…ƒæŠ•ç¨¿ãŒå‰Šé™¤ã•ã‚ŒãŸã‹å­˜åœ¨ã—ã¾ã›ã‚“ã€‚</div>`;
+        let originalContentHtml = `<div style="color: #71767b; font-size: 14px;">Œ³“Še‚ªíœ‚³‚ê‚½‚©‘¶İ‚µ‚Ü‚¹‚ñB</div>`;
         if (originalPost && origUser) {
             const origImageHtml = originalPost.image ? `<div class="post-image-container timeline-img-trigger" data-img="${originalPost.image}"><img src="${originalPost.image}" alt="Post image"></div>` : '';
             originalContentHtml = `
@@ -162,7 +161,7 @@ function renderPost(post, userMap, postMap, isProfile = false) {
                     ${createIconHtml(origUser, 'width: 32px; height: 32px; margin-right: 10px;')}
                     <div>
                         <span style="font-weight: bold; font-size: 15px;"><a href="profile.html?id=${origUser.id}" class="link-text">${origUser.name}</a></span>
-                        <span style="color: #71767b; font-size: 14px;">${origUser.account} Â· ${originalPost.timestamp}</span>
+                        <span style="color: #71767b; font-size: 14px;">${origUser.account} ? ${originalPost.timestamp}</span>
                     </div>
                 </div>
                 <div class="post-text">${originalPost.text}</div>
@@ -173,7 +172,7 @@ function renderPost(post, userMap, postMap, isProfile = false) {
         postElement.innerHTML = `
             ${createIconHtml(user)}
             <div class="post-content">
-                <div class="repost-indicator">ğŸ”„ ${user.name}ã•ã‚“ãŒãƒªãƒã‚¹ãƒˆã—ã¾ã—ãŸ</div>
+                <div class="repost-indicator">?? ${user.name}‚³‚ñ‚ªƒŠƒ|ƒXƒg‚µ‚Ü‚µ‚½</div>
                 <div class="quoted-post" onclick="window.location.href='post.html?id=${originalPost ? originalPost.id : post.id}'">
                     ${originalContentHtml}
                 </div>
@@ -189,8 +188,8 @@ function renderPost(post, userMap, postMap, isProfile = false) {
             });
         }
     } else {
-        // ãƒ—ãƒ­ãƒ•ã‚£ãƒ¼ãƒ«ç”»é¢ã®ã¨ãã ã‘ãƒ”ãƒ³ç•™ã‚è¡¨ç¤ºã‚’æœ‰åŠ¹ã«ã™ã‚‹
-        let pinHtml = (isProfile && post.pinned) ? `<div class="pin-header">ğŸ“Œ ãƒ”ãƒ³ç•™ã‚ã•ã‚ŒãŸãƒã‚¹ãƒˆ</div>` : '';
+        // ƒvƒƒtƒB[ƒ‹‰æ–Ê‚È‚Ç‚Åu?? ƒsƒ“—¯‚ß‚³‚ê‚½ƒ|ƒXƒgv‚Æ‚¢‚¤ƒwƒbƒ_[‚Ì‚İ•\¦‚µAuŒÅ’è‚³‚ê‚½ƒ|ƒXƒgv‚Ì•¶š‚ÍŠÜ‚ß‚È‚¢
+        let pinHtml = (showPinHeader && post.pinned) ? `<div class="pin-header">?? ƒsƒ“—¯‚ß‚³‚ê‚½ƒ|ƒXƒg</div>` : '';
         let imageHtml = post.image ? `<div class="post-image-container timeline-img-trigger" data-img="${post.image}"><img src="${post.image}" alt="Post image"></div>` : '';
         
         let quoteHtml = '';
@@ -217,7 +216,7 @@ function renderPost(post, userMap, postMap, isProfile = false) {
                 <div class="post-header">
                     <span class="post-name"><a href="profile.html?id=${user.id}" class="link-text">${user.name}</a></span>
                     <span class="post-account">${user.account}</span>
-                    <span class="post-time">Â· ${post.timestamp}</span>
+                    <span class="post-time">? ${post.timestamp}</span>
                 </div>
                 <div class="post-text">${post.text}</div>
                 ${quoteHtml}
@@ -262,7 +261,6 @@ function renderTimeline(userMap, postMap, posts, filterUserId = null, filterKeyw
             if (!textMatch && !nameMatch && !accountMatch) return;
         }
 
-        // é€šå¸¸ã‚¿ã‚¤ãƒ ãƒ©ã‚¤ãƒ³ãªã®ã§ isProfile = false ã¨ã—ã¦æç”»ï¼ˆãƒ”ãƒ³ç•™ã‚ã‚’å‡ºã•ãªã„ï¼‰
         const el = renderPost(post, userMap, postMap, false);
         if (el) timeline.appendChild(el);
     });
@@ -284,7 +282,7 @@ function renderProfile(targetUserId, userMap, posts) {
         largeIconElem.textContent = "";
         largeIconElem.style.backgroundImage = `url('${profileUser.iconImage}')`;
     } else {
-        largeIconElem.textContent = profileUser.icon || 'å';
+        largeIconElem.textContent = profileUser.icon || '–¼';
     }
     
     const bannerElement = document.querySelector('.profile-banner');
@@ -294,7 +292,6 @@ function renderProfile(targetUserId, userMap, posts) {
         bannerElement.style.backgroundColor = profileUser.bannerColor;
     }
 
-    // ãƒ—ãƒ­ãƒ•ã‚£ãƒ¼ãƒ«ç”»é¢å°‚ç”¨ï¼šãƒ”ãƒ³ç•™ã‚ã‚’æœ€ä¸Šéƒ¨ã«ã™ã‚‹ä¸¦ã³æ›¿ãˆ
     const profilePosts = posts.filter(p => p.userId === targetUserId);
     profilePosts.sort((a, b) => {
         if (a.pinned && !b.pinned) return -1;
@@ -307,7 +304,6 @@ function renderProfile(targetUserId, userMap, posts) {
         timeline.innerHTML = '';
         profilePosts.forEach(post => {
             if (!post.visible) return;
-            // ãƒ—ãƒ­ãƒ•ã‚£ãƒ¼ãƒ«ç”»é¢ãªã®ã§ isProfile = true ã¨ã—ã¦æç”»ï¼ˆãƒ”ãƒ³ç•™ã‚ã‚’è¡¨ç¤ºã™ã‚‹ï¼‰
             const el = renderPost(post, userMap, new Map(posts.map(p => [p.id, p])), true);
             if (el) timeline.appendChild(el);
         });
@@ -337,7 +333,7 @@ function renderProfile(targetUserId, userMap, posts) {
             } else if (tabType === 'media') {
                 const mediaPosts = posts.filter(p => p.visible && p.userId === targetUserId && p.image && p.image !== "");
                 if (mediaPosts.length === 0) {
-                    timeline.innerHTML = `<div style="padding: 40px; text-align: center; color: #71767b;">ãƒ¡ãƒ‡ã‚£ã‚¢ä»˜ãã®æŠ•ç¨¿ã¯ã‚ã‚Šã¾ã›ã‚“ã€‚</div>`;
+                    timeline.innerHTML = `<div style="padding: 40px; text-align: center; color: #71767b;">ƒƒfƒBƒA•t‚«‚Ì“Še‚Í‚ ‚è‚Ü‚¹‚ñB</div>`;
                     return;
                 }
                 const gridContainer = document.createElement('div');
@@ -353,7 +349,7 @@ function renderProfile(targetUserId, userMap, posts) {
             } else if (tabType === 'replies') {
                 const replyPosts = posts.filter(p => p.visible && p.userId === targetUserId && p.type === 'reply');
                 if (replyPosts.length === 0) {
-                    timeline.innerHTML = `<div style="padding: 40px; text-align: center; color: #71767b;">ã¾ã è¿”ä¿¡ã¯ã‚ã‚Šã¾ã›ã‚“ã€‚</div>`;
+                    timeline.innerHTML = `<div style="padding: 40px; text-align: center; color: #71767b;">‚Ü‚¾•ÔM‚Í‚ ‚è‚Ü‚¹‚ñB</div>`;
                     return;
                 }
                 const postMap = new Map(posts.map(p => [p.id, p]));
@@ -407,7 +403,7 @@ function renderPostDetailPage(targetPostId, userMap, postMap, posts) {
                 if (el) repliesContainer.appendChild(el);
             });
         } else {
-            repliesContainer.innerHTML = `<div style="padding: 40px; text-align: center; color: #71767b;">ã“ã®ãƒã‚¹ãƒˆã¸ã®è¿”ä¿¡ã¯ã‚ã‚Šã¾ã›ã‚“ã€‚</div>`;
+            repliesContainer.innerHTML = `<div style="padding: 40px; text-align: center; color: #71767b;">‚±‚Ìƒ|ƒXƒg‚Ö‚Ì•ÔM‚Í‚ ‚è‚Ü‚¹‚ñB</div>`;
         }
     }
 }
