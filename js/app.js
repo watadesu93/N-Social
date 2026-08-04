@@ -138,7 +138,8 @@ function openRepostModal(post, userMap, postMap) {
     repostModal.style.display = 'flex';
 }
 
-function renderPost(post, userMap, postMap) {
+// 第2引数に isProfile (プロフィール画面かどうか) を追加
+function renderPost(post, userMap, postMap, isProfile = false) {
     const user = userMap.get(post.userId);
     if (!user) return null;
 
@@ -188,7 +189,8 @@ function renderPost(post, userMap, postMap) {
             });
         }
     } else {
-        let pinHtml = post.pinned ? `<div class="pin-header">📌 ピン留めされたポスト</div>` : '';
+        // プロフィール画面のときだけピン留め表示を有効にする
+        let pinHtml = (isProfile && post.pinned) ? `<div class="pin-header">📌 ピン留めされたポスト</div>` : '';
         let imageHtml = post.image ? `<div class="post-image-container timeline-img-trigger" data-img="${post.image}"><img src="${post.image}" alt="Post image"></div>` : '';
         
         let quoteHtml = '';
@@ -246,7 +248,6 @@ function renderTimeline(userMap, postMap, posts, filterUserId = null, filterKeyw
     if (!timeline) return;
     timeline.innerHTML = '';
 
-    // 通常のタイムラインはピン留めを考慮せず、通常の新しい順（ID順）で表示
     const sortedPosts = [...posts].sort((a, b) => b.id - a.id);
 
     sortedPosts.forEach(post => {
@@ -261,7 +262,8 @@ function renderTimeline(userMap, postMap, posts, filterUserId = null, filterKeyw
             if (!textMatch && !nameMatch && !accountMatch) return;
         }
 
-        const el = renderPost(post, userMap, postMap);
+        // 通常タイムラインなので isProfile = false として描画（ピン留めを出さない）
+        const el = renderPost(post, userMap, postMap, false);
         if (el) timeline.appendChild(el);
     });
 }
@@ -292,7 +294,7 @@ function renderProfile(targetUserId, userMap, posts) {
         bannerElement.style.backgroundColor = profileUser.bannerColor;
     }
 
-    // プロフィール画面専用：ピン留めを最上部にする並び替えを行ってからタイムラインに表示
+    // プロフィール画面専用：ピン留めを最上部にする並び替え
     const profilePosts = posts.filter(p => p.userId === targetUserId);
     profilePosts.sort((a, b) => {
         if (a.pinned && !b.pinned) return -1;
@@ -305,7 +307,8 @@ function renderProfile(targetUserId, userMap, posts) {
         timeline.innerHTML = '';
         profilePosts.forEach(post => {
             if (!post.visible) return;
-            const el = renderPost(post, userMap, new Map(posts.map(p => [p.id, p])));
+            // プロフィール画面なので isProfile = true として描画（ピン留めを表示する）
+            const el = renderPost(post, userMap, new Map(posts.map(p => [p.id, p])), true);
             if (el) timeline.appendChild(el);
         });
     }
@@ -328,7 +331,7 @@ function renderProfile(targetUserId, userMap, posts) {
                 });
                 pPosts.forEach(post => {
                     if (!post.visible) return;
-                    const el = renderPost(post, userMap, new Map(posts.map(p => [p.id, p])));
+                    const el = renderPost(post, userMap, new Map(posts.map(p => [p.id, p])), true);
                     if (el) timeline.appendChild(el);
                 });
             } else if (tabType === 'media') {
@@ -355,7 +358,7 @@ function renderProfile(targetUserId, userMap, posts) {
                 }
                 const postMap = new Map(posts.map(p => [p.id, p]));
                 replyPosts.forEach(p => {
-                    const el = renderPost(p, userMap, postMap);
+                    const el = renderPost(p, userMap, postMap, false);
                     if (el) timeline.appendChild(el);
                 });
             }
@@ -385,13 +388,13 @@ function renderPostDetailPage(targetPostId, userMap, postMap, posts) {
     if (targetPost.replyTo) {
         const parentPost = postMap.get(targetPost.replyTo);
         if (parentPost && parentContainer) {
-            const parentEl = renderPost(parentPost, userMap, postMap);
+            const parentEl = renderPost(parentPost, userMap, postMap, false);
             if (parentEl) parentContainer.appendChild(parentEl);
         }
     }
 
     if (singleContainer) {
-        const el = renderPost(targetPost, userMap, postMap);
+        const el = renderPost(targetPost, userMap, postMap, false);
         if (el) singleContainer.appendChild(el);
     }
 
@@ -400,7 +403,7 @@ function renderPostDetailPage(targetPostId, userMap, postMap, posts) {
         const replies = posts.filter(p => p.replyTo === targetPostId && p.visible);
         if (replies.length > 0) {
             replies.forEach(reply => {
-                const el = renderPost(reply, userMap, postMap);
+                const el = renderPost(reply, userMap, postMap, false);
                 if (el) repliesContainer.appendChild(el);
             });
         } else {
