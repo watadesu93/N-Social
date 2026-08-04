@@ -246,11 +246,8 @@ function renderTimeline(userMap, postMap, posts, filterUserId = null, filterKeyw
     if (!timeline) return;
     timeline.innerHTML = '';
 
-    const sortedPosts = [...posts].sort((a, b) => {
-        if (a.pinned) return -1;
-        if (b.pinned) return 1;
-        return 0;
-    });
+    // 通常のタイムラインはピン留めを考慮せず、通常の新しい順（ID順）で表示
+    const sortedPosts = [...posts].sort((a, b) => b.id - a.id);
 
     sortedPosts.forEach(post => {
         if (!post.visible) return;
@@ -295,7 +292,23 @@ function renderProfile(targetUserId, userMap, posts) {
         bannerElement.style.backgroundColor = profileUser.bannerColor;
     }
 
-    renderTimeline(userMap, new Map(posts.map(p => [p.id, p])), posts, targetUserId);
+    // プロフィール画面専用：ピン留めを最上部にする並び替えを行ってからタイムラインに表示
+    const profilePosts = posts.filter(p => p.userId === targetUserId);
+    profilePosts.sort((a, b) => {
+        if (a.pinned && !b.pinned) return -1;
+        if (!a.pinned && b.pinned) return 1;
+        return b.id - a.id;
+    });
+
+    const timeline = document.getElementById('timeline');
+    if (timeline) {
+        timeline.innerHTML = '';
+        profilePosts.forEach(post => {
+            if (!post.visible) return;
+            const el = renderPost(post, userMap, new Map(posts.map(p => [p.id, p])));
+            if (el) timeline.appendChild(el);
+        });
+    }
 
     const tabs = document.querySelectorAll('.profile-tab');
     tabs.forEach(tab => {
@@ -307,7 +320,17 @@ function renderProfile(targetUserId, userMap, posts) {
             timeline.innerHTML = '';
 
             if (tabType === 'posts') {
-                renderTimeline(userMap, new Map(posts.map(p => [p.id, p])), posts, targetUserId);
+                const pPosts = posts.filter(p => p.userId === targetUserId);
+                pPosts.sort((a, b) => {
+                    if (a.pinned && !b.pinned) return -1;
+                    if (!a.pinned && b.pinned) return 1;
+                    return b.id - a.id;
+                });
+                pPosts.forEach(post => {
+                    if (!post.visible) return;
+                    const el = renderPost(post, userMap, new Map(posts.map(p => [p.id, p])));
+                    if (el) timeline.appendChild(el);
+                });
             } else if (tabType === 'media') {
                 const mediaPosts = posts.filter(p => p.visible && p.userId === targetUserId && p.image && p.image !== "");
                 if (mediaPosts.length === 0) {
