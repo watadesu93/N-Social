@@ -107,8 +107,6 @@ function createActionsHtml(post) {
             <div class="post-action-item repost action-repost-trigger" data-post-id="${post.id}">🔄 <span>${post.reposts || 0}</span></div>
             <div class="post-action-item like">❤️ <span>${post.likes || 0}</span></div>
             <div class="post-action-item view">📊 <span>${post.views || '2.2万'}</span></div>
-            <div class="post-action-item bookmark">🔖</div>
-            <div class="post-action-item share">⤴</div>
         </div>
     `;
 }
@@ -150,7 +148,6 @@ function renderPost(post, userMap, postMap, showPinHeader = false) {
         window.location.href = `post.html?id=${post.id}`;
     });
 
-    // アカウント名やタイムスタンプ等に含まれてしまう「固定されたポスト」の文字列を強制除去
     let postTimestamp = (post.timestamp || '').replace(/固定されたポスト/g, '').replace(/·/g, '').trim();
 
     if (post.type === 'repost') {
@@ -193,7 +190,6 @@ function renderPost(post, userMap, postMap, showPinHeader = false) {
             });
         }
     } else {
-        // プロフィール画面の先頭にある時だけピン留め見出しを表示（文字化け防止のためUnicode使用）
         let pinHtml = (showPinHeader && post.pinned) ? `<div class="pin-header">\uD83D\uDCCC ピン留めされたポスト</div>` : '';
         let imageHtml = post.image ? `<div class="post-image-container timeline-img-trigger" data-img="${post.image}"><img src="${post.image}" alt="Post image"></div>` : '';
         
