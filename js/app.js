@@ -30,9 +30,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         mobUsers.forEach(u => userMap.set(u.id, u));
 
         let posts = [...mainPosts, ...mobPosts];
-
-        // 各ポストに対する返信をチェックし、足りない場合は一般ユーザー（mob_users）からの返信を自動生成して3〜7件にする
         const mobUserIds = mobUsers.map(u => u.id);
+        
         const replyTexts = [
             "初配信楽しみにしてます！絶対見ますね✨",
             "通知オンにして待機してます…！",
@@ -43,66 +42,82 @@ document.addEventListener('DOMContentLoaded', async () => {
             "初配信の準備バッチリです👍頑張ってください！"
         ];
 
-        // 既存の返信マップを作成
-        const replyCountMap = new Map();
-        posts.forEach(p => {
-            if (p.replyTo) {
-                replyCountMap.set(p.replyTo, (replyCountMap.get(p.replyTo) || 0) + 1);
+        // 基準となる現在日時（2026年8月5日をベース）
+        const baseNow = new Date('2026-08-05T10:46:30').getTime();
+
+        // VTuberの主要な自己紹介ポスト（ID 1, 101〜107など、または画像付き・主要なもの）の日付を半年前〜1年前に分散
+        posts.forEach(post => {
+            if (post.type !== 'repost' && post.type !== 'reply') {
+                // IDをシードにして1年前〜半年前（180日〜365日前）のランダムな日数を算出
+                const daysAgo = 180 + ((post.id * 37) % 185); 
+                const postTime = new Date(baseNow - daysAgo * 24 * 60 * 60 * 1000);
+                
+                // 日付フォーマット（例: 2025年11月15日）
+                const year = postTime.getFullYear();
+                const month = postTime.getMonth() + 1;
+                const day = postTime.getDate();
+                post.timestamp = `${year}年${month}月${day}日`;
+                post._exactTime = postTime.getTime(); // 後の返信日時計算用
             }
         });
 
-        // 返信データが足りないポスト（特にID 1や101〜107など）に返信を動的追加
+        // 返信データの数（3〜7個）と日付（自己紹介から2週間以内）を同期・生成
         let maxPostId = Math.max(...posts.map(p => p.id), 1000);
         posts.forEach(post => {
-            // リポストや返信自体ではなく、通常のポストに対して返数を3〜7に調整
             if (post.type !== 'repost' && post.type !== 'reply') {
+                const parentTime = post._exactTime || (baseNow - 200 * 24 * 60 * 60 * 1000);
                 const currentReplies = posts.filter(p => p.replyTo === post.id && p.visible);
                 
-                // もし返信数が3〜7の範囲外、または足りない場合はランダム（3〜7）で自動生成
                 let targetCount = currentReplies.length;
                 if (targetCount < 3 || targetCount > 7) {
-                    // 3〜7のランダムな数を決定（投稿IDをシード代わりに固定的なランダム数にする）
-                    const seed = post.id;
-                    targetCount = 3 + (seed % 5); // 3〜7の範囲
+                    targetCount = 3 + (post.id % 5); // 3〜7の範囲
                 }
+                post.comments = targetCount;
 
-                post.comments = targetCount; // コメント数を一致させる
-
-                // 足りない分を追加
+                // 足りない分の返信を作成
                 if (currentReplies.length < targetCount) {
                     const needed = targetCount - currentReplies.length;
                     for (let i = 0; i < needed; i++) {
                         maxPostId++;
                         const randomUser = mobUserIds[(maxPostId + post.id) % mobUserIds.length];
                         const randomText = replyTexts[(maxPostId) % replyTexts.length];
+                        
+                        // 返信日時は、親ポストの日付から0日〜14日（2週間以内）のランダムな後
+                        const replyOffsetHours = ((maxPostId * 13) % (14 * 24));
+                        const replyTime = new Date(parentTime + replyOffsetHours * 60 * 60 * 1000);
+                        const rYear = replyTime.getFullYear();
+                        const rMonth = replyTime.getMonth() + 1;
+                        const rDay = replyTime.getDate();
+
                         posts.push({
                             id: maxPostId,
                             userId: randomUser,
                             text: randomText,
-                            timestamp: `${(maxPostId % 5) + 1}分前`,
+                            timestamp: `${rYear}年${rMonth}月${rDay}日`,
                             likes: (maxPostId % 15),
                             reposts: 0,
                             comments: 0,
                             views: "1.0千",
                             replyTo: post.id,
                             visible: true,
-                            type: "reply"
+                            type: "reply",
+                            _exactTime: replyTime.getTime()
                         });
                     }
-                } else if (currentReplies.length > targetCount) {
-                    // 多すぎる場合は指定数まで非表示にする等
-                    let excess = currentReplies.length - targetCount;
-                    currentReplies.forEach(r => {
-                        if (excess > 0) {
-                            r.visible = false;
-                            excess--;
-                        }
-                    });
                 }
             }
         });
 
-        posts.sort((a, b) => b.id - a.id);
+        // タイムラインの塊を解消するため、ID順だけでなく微小なランダム要素（またはIDのシャッフル感）を加えてソート
+        posts.sort((a, b) => {
+            const timeA = a._exactTime || (baseNow - a.id * 100000);
+            const timeB = b._exactTime || (baseNow - b.id * 100000);
+            if (timeB !== timeA) {
+                return timeB - timeA;
+            }
+            return b.id - a.id;
+        });
+
         const postMap = new Map();
         posts.forEach(p => postMap.set(p.id, p));
 
@@ -320,9 +335,7 @@ function renderTimeline(userMap, postMap, posts, filterUserId = null, filterKeyw
     if (!timeline) return;
     timeline.innerHTML = '';
 
-    const sortedPosts = [...posts].sort((a, b) => b.id - a.id);
-
-    sortedPosts.forEach(post => {
+    posts.forEach(post => {
         if (!post.visible) return;
         if (filterUserId && post.userId !== filterUserId) return;
 
@@ -369,7 +382,9 @@ function renderProfile(targetUserId, userMap, posts) {
     profilePosts.sort((a, b) => {
         if (a.pinned && !b.pinned) return -1;
         if (!a.pinned && b.pinned) return 1;
-        return b.id - a.id;
+        const timeA = a._exactTime || 0;
+        const timeB = b._exactTime || 0;
+        return timeB - timeA;
     });
 
     const timeline = document.getElementById('timeline');
@@ -396,7 +411,9 @@ function renderProfile(targetUserId, userMap, posts) {
                 pPosts.sort((a, b) => {
                     if (a.pinned && !b.pinned) return -1;
                     if (!a.pinned && b.pinned) return 1;
-                    return b.id - a.id;
+                    const timeA = a._exactTime || 0;
+                    const timeB = b._exactTime || 0;
+                    return timeB - timeA;
                 });
                 pPosts.forEach(post => {
                     if (!post.visible) return;
