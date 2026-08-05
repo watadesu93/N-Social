@@ -29,7 +29,79 @@ document.addEventListener('DOMContentLoaded', async () => {
         users.forEach(u => userMap.set(u.id, u));
         mobUsers.forEach(u => userMap.set(u.id, u));
 
-        const posts = [...mainPosts, ...mobPosts];
+        let posts = [...mainPosts, ...mobPosts];
+
+        // 各ポストに対する返信をチェックし、足りない場合は一般ユーザー（mob_users）からの返信を自動生成して3〜7件にする
+        const mobUserIds = mobUsers.map(u => u.id);
+        const replyTexts = [
+            "初配信楽しみにしてます！絶対見ますね✨",
+            "通知オンにして待機してます…！",
+            "推しが増えてしまう予感しかしません…",
+            "ビジュ良すぎませんか？最高です！",
+            "お迎え失礼します！これから応援させてください🙌",
+            "待ちに待ったデビューだぁぁぁ！",
+            "初配信の準備バッチリです👍頑張ってください！"
+        ];
+
+        // 既存の返信マップを作成
+        const replyCountMap = new Map();
+        posts.forEach(p => {
+            if (p.replyTo) {
+                replyCountMap.set(p.replyTo, (replyCountMap.get(p.replyTo) || 0) + 1);
+            }
+        });
+
+        // 返信データが足りないポスト（特にID 1や101〜107など）に返信を動的追加
+        let maxPostId = Math.max(...posts.map(p => p.id), 1000);
+        posts.forEach(post => {
+            // リポストや返信自体ではなく、通常のポストに対して返数を3〜7に調整
+            if (post.type !== 'repost' && post.type !== 'reply') {
+                const currentReplies = posts.filter(p => p.replyTo === post.id && p.visible);
+                
+                // もし返信数が3〜7の範囲外、または足りない場合はランダム（3〜7）で自動生成
+                let targetCount = currentReplies.length;
+                if (targetCount < 3 || targetCount > 7) {
+                    // 3〜7のランダムな数を決定（投稿IDをシード代わりに固定的なランダム数にする）
+                    const seed = post.id;
+                    targetCount = 3 + (seed % 5); // 3〜7の範囲
+                }
+
+                post.comments = targetCount; // コメント数を一致させる
+
+                // 足りない分を追加
+                if (currentReplies.length < targetCount) {
+                    const needed = targetCount - currentReplies.length;
+                    for (let i = 0; i < needed; i++) {
+                        maxPostId++;
+                        const randomUser = mobUserIds[(maxPostId + post.id) % mobUserIds.length];
+                        const randomText = replyTexts[(maxPostId) % replyTexts.length];
+                        posts.push({
+                            id: maxPostId,
+                            userId: randomUser,
+                            text: randomText,
+                            timestamp: `${(maxPostId % 5) + 1}分前`,
+                            likes: (maxPostId % 15),
+                            reposts: 0,
+                            comments: 0,
+                            views: "1.0千",
+                            replyTo: post.id,
+                            visible: true,
+                            type: "reply"
+                        });
+                    }
+                } else if (currentReplies.length > targetCount) {
+                    // 多すぎる場合は指定数まで非表示にする等
+                    let excess = currentReplies.length - targetCount;
+                    currentReplies.forEach(r => {
+                        if (excess > 0) {
+                            r.visible = false;
+                            excess--;
+                        }
+                    });
+                }
+            }
+        });
+
         posts.sort((a, b) => b.id - a.id);
         const postMap = new Map();
         posts.forEach(p => postMap.set(p.id, p));
